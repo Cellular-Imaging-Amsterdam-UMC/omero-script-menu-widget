@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #draggable {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            width: 300px;
+            height: 200px;
+            background-color: lightgrey;
+            border: 1px solid #ccc;
+            z-index: 1000; /* Ensure it's on top of other elements */
+        }
+    </style>
+    <!-- jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#draggable").draggable().resizable();
+
+            // Add click event listener to the widget
+            $("#draggable").click(function() {
+                // Hardcoded script ID
+                var scriptId = 64;
+                // URL to call the script_ui function
+                var url = "/webclient/script_ui/" + scriptId + "/";
+
+                console.log("Calling script_ui with URL:", url);
+
+                // Make an AJAX GET request to the URL
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function(response) {
+                        // Handle the response from the server
+                        console.log("Script UI called successfully:", response);
+                        // Display the response in the widget
+                        $("#draggable").html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error("Error calling Script UI:", error);
+                        console.log("Status:", status);
+                        console.log("XHR:", xhr);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="draggable">
+        <!-- Empty widget content -->
+        <p>It's working!</p>
+    </div>
+</body>
+</html>

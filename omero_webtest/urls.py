@@ -8,6 +8,10 @@ from . import views
 
 urlpatterns = [
 
+    # NEW: IFRAME PART ###
+    re_path(r'^iframe/$', views.iframe, name='webtest_iframe'),
+    ### END NEW ###
+
     re_path(r'^examples/(?P<image_id>[0-9]+)/(?P<template>[a-z0-9_].*)',
             lambda request, image_id, template:
                 views.ExamplesView.as_view(
