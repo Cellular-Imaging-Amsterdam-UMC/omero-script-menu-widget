@@ -4,42 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Draggable Widget</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #draggable {
-            position: fixed;
-            bottom: 50px;
-            right: 50px;
-            width: 300px;
-            height: 400px;
-            background-color: lightgrey;
-            border: 1px solid #ccc;
-            z-index: 1000; /* Ensure it's on top of other elements */
-            overflow: auto; /* Add scroll if content overflows */
-        }
-        .script-menu ul {
-            list-style-type: none;
-            padding: 0;
-            margin-left: 20px; /* Indentation for nested lists */
-        }
-        .script-menu li {
-            margin: 5px 0;
-        }
-        .script-menu a {
-            text-decoration: none;
-            color: #000;
-        }
-        .script-menu a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/webtest/style.css">
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(document).ready(function() {
+        var jQueryNoConflict = jQuery.noConflict(true);
+
+        jQueryNoConflict(document).ready(function($) {
             $("#draggable").draggable().resizable();
 
             // Function to fetch and render the script menu
