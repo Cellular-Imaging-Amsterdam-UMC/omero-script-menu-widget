@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Widget</title>
+    <link rel="stylesheet" type="text/css" href="/static/webtest/style.css">
+    <!-- jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/static/webtest/js/main.js"></script> <!-- Reference to main.js -->
+</head>
+<body>
+    <div id="draggable" data-url="{% url 'list_scripts' %}">
+        <!-- Script menu will be loaded here -->
+        <p>Loading script menu...</p>
+    </div>
+</body>
+</html>
