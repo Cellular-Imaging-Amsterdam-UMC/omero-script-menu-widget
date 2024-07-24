@@ -11,7 +11,15 @@
     <script src="/static/webtest/js/main.js"></script> <!-- Reference to main.js -->
 </head>
 <body>
-    <div id="draggable" data-url="{% url 'list_scripts' %}">
+    <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}">
+        <div class="window-header ui-widget-header">
+            <span class="window-title">Script Menu Widget</span>
+            <div class="window-controls">
+                <button class="minimize-btn">_</button>
+                <button class="maximize-btn">□</button>
+                <button class="close-btn">×</button>
+            </div>
+        </div>
         <div class="tabs">
             <button class="tablink" onclick="openTab(event, 'omero')">omero</button>
             <button class="tablink" onclick="openTab(event, 'biomero')">biomero</button>
