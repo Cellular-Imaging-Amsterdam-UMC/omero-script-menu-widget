@@ -14,21 +14,64 @@ body {
     overflow: auto; /* Add scroll if content overflows */
 }
 
-.script-menu ul {
-    list-style-type: none;
-    padding: 0;
-    margin-left: 20px; /* Indentation for nested lists */
+.tabs {
+    overflow: hidden;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ccc;
 }
 
-.script-menu li {
-    margin: 5px 0;
+.tabs button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
 }
 
-.script-menu a {
-    text-decoration: none;
-    color: #000;
+.tabs button:hover {
+    background-color: #ddd;
 }
 
-.script-menu a:hover {
-    text-decoration: underline;
+.tabs button.active {
+    background-color: #ccc;
+}
+
+.tabs input[type="text"] {
+    float: right;
+    padding: 6px;
+    margin: 8px;
+    border: none;
+    font-size: 17px;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.subdirectory-header {
+    background-color: #336699; /* Slightly lighter blue for subdirectory headers */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.script-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.script-card {
+    background-color: #99ccff; /* Light blue background for script cards */
+    color: black; /* Black text for better readability */
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
 }

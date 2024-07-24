@@ -12,8 +12,17 @@
 </head>
 <body>
     <div id="draggable" data-url="{% url 'list_scripts' %}">
-        <!-- Script menu will be loaded here -->
-        <p>Loading script menu...</p>
+        <div class="tabs">
+            <button class="tablink" onclick="openTab(event, 'omero')">omero</button>
+            <button class="tablink" onclick="openTab(event, 'biomero')">biomero</button>
+            <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="searchScripts()">
+        </div>
+        <div id="omero" class="tabcontent">
+            <!-- omero scripts will be loaded here -->
+        </div>
+        <div id="biomero" class="tabcontent">
+            <!-- biomero scripts will be loaded here -->
+        </div>
     </div>
 </body>
 </html>
