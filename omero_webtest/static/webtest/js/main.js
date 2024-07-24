@@ -58,6 +58,7 @@ jQueryNoConflict(document).ready(function($) {
         });
         return html;
     }
+    
 
     // Function to open a tab
     window.openTab = function(event, tabName) {
