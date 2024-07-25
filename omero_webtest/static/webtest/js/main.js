@@ -57,8 +57,6 @@ jQueryNoConflict(document).ready(function($) {
     function fetchScriptMenu() {
         var url = $("#draggable").data("url"); // Get the URL from the data attribute
 
-        console.log("Fetching script menu from URL:", url);
-
         // Make an AJAX GET request to fetch the script menu
         $.ajax({
             url: url,
@@ -77,9 +75,6 @@ jQueryNoConflict(document).ready(function($) {
 
                     // Show the default tab (omero)
                     openTab(null, 'omero');
-
-                    // Call initializeScriptLaunching after the menu is built
-                    initializeScriptLaunching();
 
                     // Call handleWidgetResize to adjust script card sizes based on widget size
                     handleWidgetResize();
@@ -110,8 +105,8 @@ jQueryNoConflict(document).ready(function($) {
                 html += '</div>';
             } else if (item.id) {
                 // Leaf node (script)
-                var scriptName = item.name.replace('.py', ''); // Remove the '.py' suffix
-                html += '<div class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</div>';
+                var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
+                html += '<a href="/webclient/script_ui/' + item.id + '/" class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</a>';
             }
         });
         return html;
@@ -189,20 +184,7 @@ jQueryNoConflict(document).ready(function($) {
 
     // Call handleWidgetResize on initial load to set the correct size
     handleWidgetResize();
-});
 
-// Add this function at the end of the file
-function initializeScriptLaunching() {
-    console.log("Initializing script launching...");
-    jQueryNoConflict("#draggable").on('click', '.script-card', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        var scriptId = jQueryNoConflict(this).data('id');
-        console.log("Clicked script ID:", scriptId);
-        if (typeof OME !== 'undefined' && typeof OME.openScriptWindow === 'function') {
-            OME.openScriptWindow(scriptId);
-        } else {
-            console.error("OME.openScriptWindow is not available");
-        }
-    });
-}
+    // Bind click event to script cards to use OME.openScriptWindow
+    $("#draggable").on('click', '.script-card', OME.openScriptWindow);
+});
