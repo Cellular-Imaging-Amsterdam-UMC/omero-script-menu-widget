@@ -41,8 +41,8 @@ jQueryNoConflict(document).ready(function($) {
 
                 // Check the structure of the response
                 if (Array.isArray(response)) {
-                    var omeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "omero").ul);
-                    var biomeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "biomero").ul);
+                    var omeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "omero").ul, true);
+                    var biomeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "biomero").ul, true);
 
                     $("#omero").html(omeroHtml);
                     $("#biomero").html(biomeroHtml);
@@ -68,8 +68,10 @@ jQueryNoConflict(document).ready(function($) {
         });
     }
 
-    function buildScriptMenuHtml(scriptMenu) {
+    function buildScriptMenuHtml(scriptMenu, isMainDirectory = false) {
         var html = '';
+        var looseScripts = [];
+
         scriptMenu.forEach(function(item) {
             if (item.ul) {
                 // Directory node
@@ -80,9 +82,20 @@ jQueryNoConflict(document).ready(function($) {
             } else if (item.id) {
                 // Leaf node (script)
                 var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
-                html += '<a href="/webclient/script_ui/' + item.id + '/" class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</a>';
+                looseScripts.push('<a href="/webclient/script_ui/' + item.id + '/" class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</a>');
             }
         });
+
+        // If there are loose scripts and it's a main directory, add them to a subdirectory called ♥
+        if (looseScripts.length > 0 && isMainDirectory) {
+            html += '<div class="directory">';
+            html += '<div class="subdirectory-header">&hearts;</div>'; // Using HTML entity for heart symbol
+            html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
+            html += '</div>';
+        } else {
+            html += looseScripts.join('');
+        }
+
         return html;
     }
 
