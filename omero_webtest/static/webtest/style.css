@@ -103,6 +103,11 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Ensure font-family is applied */
 }
 
+/* Add margin-bottom to the last directory */
+.directory:last-child {
+    margin-bottom: 50px; /* Adjust the value as needed */
+}
+
 .subdirectory-header {
     background-color: transparent; /* Set background to transparent */
     color: white; /* Keep the text color white */
