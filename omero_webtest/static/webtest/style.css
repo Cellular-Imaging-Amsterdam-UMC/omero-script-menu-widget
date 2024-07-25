@@ -32,8 +32,20 @@ body {
     border-top-right-radius: 10px; /* Rounded edges for the header */
 }
 
+.title-container {
+    display: flex;
+    align-items: center;
+}
+
 .window-title {
     font-size: 16px; /* Default font size */
+}
+
+.script-icon {
+    width: 24px; /* Adjust the size as needed */
+    height: 24px; /* Adjust the size as needed */
+    margin-left: 10px; /* Adjust the spacing as needed */
+    margin-right: 10px;
 }
 
 .window-controls button {
@@ -156,7 +168,6 @@ body {
 
 .custom-script-card {
     background-color: #cceeff; /* Custom background color */
-    /* Removed font-family to inherit from parent */
 }
 
 .script-card:hover {
