@@ -15,32 +15,6 @@ jQueryNoConflict(document).ready(function($) {
             containment: "window" // Restrict movement within the window
         });
 
-        // Minimize button functionality
-        $(".minimize-btn").on('click', function() {
-            $("#draggable").addClass("minimized").draggable("option", "handle", ".restore-btn");
-            $("#draggable").resizable("option", "disabled", true);
-            $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").hide(); // Hide all contents
-            $("#draggable").css({
-                width: '30px',
-                height: '30px'
-            });
-            if ($(".restore-btn").length === 0) {
-                $("#draggable").append('<div class="restore-btn">+</div>');
-            }
-        });
-
-        // Restore button functionality
-        $("#draggable").on('click', '.restore-btn', function() {
-            $("#draggable").removeClass("minimized").draggable("option", "handle", ".window-header");
-            $("#draggable").resizable("option", "disabled", false);
-            $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").show(); // Show all contents
-            $("#draggable").css({
-                width: originalSize.width,
-                height: originalSize.height
-            });
-            $(".restore-btn").remove();
-        });
-
         // Maximize button functionality
         $(".maximize-btn").on('click', function() {
             $("#draggable").toggleClass("maximized");

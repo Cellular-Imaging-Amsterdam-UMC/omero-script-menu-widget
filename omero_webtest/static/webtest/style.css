@@ -108,7 +108,7 @@ body {
     color: white; /* Keep the text color white */
     padding-bottom: 10px; /* Padding under it */
     padding-top: 0; /* No padding above it */
-    cursor: pointer;
+    cursor: default; /* Change cursor to default to indicate it's not clickable */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
     font-size: 14px; /* Set font size */
 }
