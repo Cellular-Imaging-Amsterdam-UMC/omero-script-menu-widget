@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draggable Widget</title>
+    <title>Script Menu Widget</title>
     <link rel="stylesheet" type="text/css" href="/static/webtest/style.css">
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/static/webtest/js/main.js"></script> <!-- Reference to main.js -->
+    <script src="/static/webtest/js/scriptLauncher.integrated.js"></script>
+    <script src="/static/webtest/js/main.js"></script>
 </head>
 <body>
     <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}">
         <div class="window-header ui-widget-header">
-            <span class="window-title">Script Menu Widget</span>
+            <span class="window-title">Script Menu</span>
             <div class="window-controls">
                 <button class="minimize-btn">_</button>
                 <button class="maximize-btn">□</button>

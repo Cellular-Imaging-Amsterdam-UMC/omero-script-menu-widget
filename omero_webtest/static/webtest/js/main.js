@@ -1,56 +1,59 @@
 var jQueryNoConflict = jQuery.noConflict(true);
 
 jQueryNoConflict(document).ready(function($) {
-    var originalSize = {
-        width: $("#draggable").width(),
-        height: $("#draggable").height()
-    };
+    // Section 1: UI Initialization and Event Bindings
+    function initializeUI() {
+        var originalSize = {
+            width: $("#draggable").width(),
+            height: $("#draggable").height()
+        };
 
-    $("#draggable").resizable({
-        handles: "all"
-    }).draggable({
-        handle: ".window-header",
-        containment: "window" // Restrict movement within the window
-    });
-
-    // Minimize button functionality
-    $(".minimize-btn").on('click', function() {
-        $("#draggable").addClass("minimized").draggable("option", "handle", ".restore-btn");
-        $("#draggable").resizable("option", "disabled", true);
-        $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").hide(); // Hide all contents
-        $("#draggable").css({
-            width: '30px',
-            height: '30px'
+        $("#draggable").resizable({
+            handles: "all"
+        }).draggable({
+            handle: ".window-header",
+            containment: "window" // Restrict movement within the window
         });
-        if ($(".restore-btn").length === 0) {
-            $("#draggable").append('<div class="restore-btn">+</div>');
-        }
-    });
 
-    // Restore button functionality
-    $("#draggable").on('click', '.restore-btn', function() {
-        $("#draggable").removeClass("minimized").draggable("option", "handle", ".window-header");
-        $("#draggable").resizable("option", "disabled", false);
-        $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").show(); // Show all contents
-        $("#draggable").css({
-            width: originalSize.width,
-            height: originalSize.height
+        // Minimize button functionality
+        $(".minimize-btn").on('click', function() {
+            $("#draggable").addClass("minimized").draggable("option", "handle", ".restore-btn");
+            $("#draggable").resizable("option", "disabled", true);
+            $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").hide(); // Hide all contents
+            $("#draggable").css({
+                width: '30px',
+                height: '30px'
+            });
+            if ($(".restore-btn").length === 0) {
+                $("#draggable").append('<div class="restore-btn">+</div>');
+            }
         });
-        $(".restore-btn").remove();
-    });
 
-    // Maximize button functionality
-    $(".maximize-btn").on('click', function() {
-        $("#draggable").toggleClass("maximized");
-        handleWidgetResize(); // Call handleWidgetResize to adjust script card sizes
-    });
+        // Restore button functionality
+        $("#draggable").on('click', '.restore-btn', function() {
+            $("#draggable").removeClass("minimized").draggable("option", "handle", ".window-header");
+            $("#draggable").resizable("option", "disabled", false);
+            $("#draggable .window-header, #draggable .tabs, #draggable .tabcontent").show(); // Show all contents
+            $("#draggable").css({
+                width: originalSize.width,
+                height: originalSize.height
+            });
+            $(".restore-btn").remove();
+        });
 
-    // Close button functionality
-    $(".close-btn").on('click', function() {
-        $("#draggable").hide();
-    });
+        // Maximize button functionality
+        $(".maximize-btn").on('click', function() {
+            $("#draggable").toggleClass("maximized");
+            handleWidgetResize(); // Call handleWidgetResize to adjust script card sizes
+        });
 
-    // Function to fetch and render the script menu
+        // Close button functionality
+        $(".close-btn").on('click', function() {
+            $("#draggable").hide();
+        });
+    }
+
+    // Section 2: Script Menu Handling
     function fetchScriptMenu() {
         var url = $("#draggable").data("url"); // Get the URL from the data attribute
 
@@ -74,6 +77,12 @@ jQueryNoConflict(document).ready(function($) {
 
                     // Show the default tab (omero)
                     openTab(null, 'omero');
+
+                    // Call initializeScriptLaunching after the menu is built
+                    initializeScriptLaunching();
+
+                    // Call handleWidgetResize to adjust script card sizes based on widget size
+                    handleWidgetResize();
                 } else {
                     console.error("Unexpected response format:", response);
                     $("#draggable").html("<p>Error loading script menu.</p>");
@@ -90,7 +99,6 @@ jQueryNoConflict(document).ready(function($) {
         });
     }
 
-    // Function to build the script menu HTML
     function buildScriptMenuHtml(scriptMenu) {
         var html = '';
         scriptMenu.forEach(function(item) {
@@ -103,13 +111,38 @@ jQueryNoConflict(document).ready(function($) {
             } else if (item.id) {
                 // Leaf node (script)
                 var scriptName = item.name.replace('.py', ''); // Remove the '.py' suffix
-                html += '<div class="script-card"><a href="/webclient/script_ui/' + item.id + '/" class="script-link" data-id="' + item.id + '">' + scriptName + '</a></div>';
+                html += '<div class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</div>';
             }
         });
         return html;
     }
 
-    // Function to open a tab
+    // Section 3: Utility Functions
+    function handleWidgetResize() {
+        var widget = $("#draggable");
+        if (widget.width() < 500 || widget.height() < 500) {
+            $(".subdirectory-header").hide(); // Hide subdirectory headers
+            $(".script-card").css({
+                height: 'auto', // Adjust height to fit content
+                padding: '10px', // Reduce padding
+                'max-height': '100px' // Set smaller height
+            });
+            $("#searchBar").css({
+                width: '100px' // Narrower width for smaller widget
+            });
+        } else {
+            $(".subdirectory-header").show(); // Show subdirectory headers
+            $(".script-card").css({
+                height: '150px', // Restore original height
+                padding: '20px', // Restore original padding
+                'max-height': '' // Remove max-height restriction
+            });
+            $("#searchBar").css({
+                width: '' // Reset to default width
+            });
+        }
+    }
+
     window.openTab = function(event, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -128,7 +161,6 @@ jQueryNoConflict(document).ready(function($) {
         }
     }
 
-    // Function to search scripts
     window.searchScripts = function() {
         var input, filter, scriptCards, i;
         input = document.getElementById("searchBar");
@@ -143,39 +175,9 @@ jQueryNoConflict(document).ready(function($) {
         }
     }
 
-    // Fetch and render the script menu on page load
+    // Initial Calls
+    initializeUI();
     fetchScriptMenu();
-
-    // Bind click event to script links to use OME.openScriptWindow
-    $("#draggable").on('click', 'a.script-link', function(event) {
-        event.stopPropagation(); // Prevent the event from bubbling up
-        event.preventDefault(); // Prevent the default link behavior
-        OME.openScriptWindow(event); // Call the function to open the script window
-    });
-
-    // Function to handle special behaviors based on widget size
-    function handleWidgetResize() {
-        var widget = $("#draggable");
-        if (widget.width() < 500 || widget.height() < 500) {
-            $(".subdirectory-header").hide(); // Hide subdirectory headers
-            $(".script-card").css({
-                height: 'auto', // Adjust height to fit content
-                padding: '10px' // Reduce padding
-            });
-            $("#searchBar").css({
-                width: '100px' // Narrower width for smaller widget
-            });
-        } else {
-            $(".subdirectory-header").show(); // Show subdirectory headers
-            $(".script-card").css({
-                height: '150px', // Restore original height
-                padding: '20px' // Restore original padding
-            });
-            $("#searchBar").css({
-                width: '' // Reset to default width
-            });
-        }
-    }
 
     // Bind the resize event to handleWidgetResize function
     $("#draggable").on('resize', handleWidgetResize);
@@ -184,4 +186,23 @@ jQueryNoConflict(document).ready(function($) {
     $(window).on('load', function() {
         handleWidgetResize();
     });
+
+    // Call handleWidgetResize on initial load to set the correct size
+    handleWidgetResize();
 });
+
+// Add this function at the end of the file
+function initializeScriptLaunching() {
+    console.log("Initializing script launching...");
+    jQueryNoConflict("#draggable").on('click', '.script-card', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var scriptId = jQueryNoConflict(this).data('id');
+        console.log("Clicked script ID:", scriptId);
+        if (typeof OME !== 'undefined' && typeof OME.openScriptWindow === 'function') {
+            OME.openScriptWindow(scriptId);
+        } else {
+            console.error("OME.openScriptWindow is not available");
+        }
+    });
+}
