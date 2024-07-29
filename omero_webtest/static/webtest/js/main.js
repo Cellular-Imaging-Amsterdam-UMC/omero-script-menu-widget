@@ -83,8 +83,9 @@ jQueryNoConflict(document).ready(function($) {
         scriptMenu.forEach(function(item) {
             if (item.ul) {
                 // Directory node
+                var directoryName = item.name.replace(/_/g, ' '); // Replace underscores with spaces
                 html += '<div class="directory">';
-                html += '<div class="subdirectory-header">' + item.name + '</div>';
+                html += '<div class="subdirectory-header">' + directoryName + '</div>';
                 html += '<div class="script-cards-container">' + buildScriptMenuHtml(item.ul) + '</div>';
                 html += '</div>';
             } else if (item.id) {

@@ -121,12 +121,12 @@ body {
 
 .subdirectory-header {
     background-color: transparent; /* Set background to transparent */
-    color: rgb(0, 0, 0); /* Keep the text color white */
+    color: white; /* Set text color to white */
     padding-bottom: 10px; /* Padding under it */
     padding-top: 0; /* No padding above it */
     cursor: default; /* Change cursor to default to indicate it's not clickable */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
-    font-size: 14px; /* Set font size */
+    font-size: 16px; /* Set font size */
 }
 
 @media (max-width: 600px), (max-height: 600px) {
@@ -148,7 +148,7 @@ body {
 
 .script-card {
     background-color: #99ccff; /* Light blue background for script cards */
-    color: black !important; /* Black text for better readability */
+    color: white !important; /* White text for better readability */
     padding: 10px; /* Halved the padding */
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -160,7 +160,7 @@ body {
     overflow: hidden; /* Ensure content does not overflow */
     position: relative; /* Required for the fade effect */
     cursor: pointer; /* Make the entire card clickable */
-    transition: background-color 0.3s, border-width 0.3s, font-weight 0.3s; /* Smooth transition for hover effects */
+    transition: background-color 0.3s, border-width 0.3s, font-weight 0.3s, color 0.3s; /* Smooth transition for hover effects */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
     font-size: 16px; /* Set font size */
 }
@@ -171,6 +171,7 @@ body {
 
 .script-card:hover {
     background-color: #ffcc99; /* Lighter blue on hover */
+    color: black !important; /* Change text color to black on hover */
     border-color: black; /* Change border color to black */
 }
 
