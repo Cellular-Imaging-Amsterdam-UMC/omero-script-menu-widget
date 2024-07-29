@@ -153,9 +153,10 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     flex: 1 1 calc(33.333% - 10px); /* Flexible width to allow 3 cards side by side */
-    text-align: center;
+    text-align: left; /* Align text to the left */
     box-sizing: border-box;
     min-width: 200px; /* Minimum width to ensure cards are not too small */
+    min-height: 60px; /* Minimum height to ensure title is not cut off */
     height: 150px; /* Increase height for larger size */
     overflow: hidden; /* Ensure content does not overflow */
     position: relative; /* Required for the fade effect */

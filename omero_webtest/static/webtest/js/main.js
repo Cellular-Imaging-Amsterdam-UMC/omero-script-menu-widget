@@ -91,7 +91,8 @@ jQueryNoConflict(document).ready(function($) {
             } else if (item.id) {
                 // Leaf node (script)
                 var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
-                looseScripts.push('<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="/webclient/script_ui/' + item.id + '/">' + scriptName + '</div>');
+                var content = scriptCardContent[item.id] || ''; // Get the content from scriptCardContent
+                looseScripts.push('<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="/webclient/script_ui/' + item.id + '/">' + scriptName + '<div class="script-card-content">' + content + '</div></div>');
             }
         });
 
@@ -121,6 +122,8 @@ jQueryNoConflict(document).ready(function($) {
             $("#searchBar").css({
                 width: '100px' // Narrower width for smaller widget
             });
+            // Clear script card content
+            $(".script-card-content").empty();
         } else {
             $(".subdirectory-header").show(); // Show subdirectory headers
             $(".script-card").css({
@@ -131,6 +134,7 @@ jQueryNoConflict(document).ready(function($) {
             $("#searchBar").css({
                 width: '' // Reset to default width
             });
+            updateScriptCardContent(); // Update script card content when in large state
         }
     }
 
