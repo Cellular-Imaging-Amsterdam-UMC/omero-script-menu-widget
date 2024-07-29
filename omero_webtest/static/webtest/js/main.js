@@ -91,7 +91,7 @@ jQueryNoConflict(document).ready(function($) {
             } else if (item.id) {
                 // Leaf node (script)
                 var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
-                looseScripts.push('<a href="/webclient/script_ui/' + item.id + '/" class="script-card custom-script-card" data-id="' + item.id + '">' + scriptName + '</a>');
+                looseScripts.push('<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="/webclient/script_ui/' + item.id + '/">' + scriptName + '</div>');
             }
         });
 
@@ -182,5 +182,14 @@ jQueryNoConflict(document).ready(function($) {
     handleWidgetResize();
 
     // Bind click event to script cards to use OME.openScriptWindow
-    $("#draggable").on('click', '.script-card', OME.openScriptWindow);
+    $("#draggable").on('click', '.script-card', function(event) {
+        event.preventDefault();
+        var scriptUrl = $(this).data('url');
+        var mockEvent = {
+            target: {
+                href: scriptUrl
+            }
+        };
+        OME.openScriptWindow(mockEvent, 800, 600);
+    });
 });

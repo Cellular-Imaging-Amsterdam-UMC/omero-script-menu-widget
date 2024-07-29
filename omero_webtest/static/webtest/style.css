@@ -242,3 +242,29 @@ body {
     width: 20px; /* Adjust width as needed */
     background: linear-gradient(to left, #99ccff, transparent); /* Fade effect */
 }
+
+.script-card-content {
+    display: none; /* Hide content by default */
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    top: 40px; /* Leave space for the title */
+    overflow: hidden;
+    display: flex; /* Use flexbox to align items side by side */
+    align-items: center; /* Center items vertically */
+}
+
+.script-card-content span {
+    margin-right: 10px; /* Add some space between the text and the image */
+}
+
+.script-card-content img {
+    max-width: 50px; /* Set a max width for the image */
+    max-height: 50px; /* Set a max height for the image */
+    object-fit: contain;
+}
+
+.script-card.large .script-card-content {
+    display: flex; /* Show content in large form */
+}
