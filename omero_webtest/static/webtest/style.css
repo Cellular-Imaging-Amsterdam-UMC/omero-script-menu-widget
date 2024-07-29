@@ -252,18 +252,29 @@ body {
     right: 10px;
     top: 40px; /* Leave space for the title */
     overflow: hidden;
-    display: flex; /* Use flexbox to align items side by side */
+    display: -webkit-box; /* Use flexbox to align items side by side */
+    -webkit-box-orient: vertical; /* Set box orientation to vertical */
+    -webkit-line-clamp: 6; /* Show up to N lines */
     align-items: center; /* Center items vertically */
+    white-space: normal; /* Allow text to wrap */
+    text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
 }
 
 .script-card-content span {
     margin-right: 10px; /* Add some space between the text and the image */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+    white-space: normal; /* Allow text to wrap */
+    display: -webkit-box; /* Use flexbox to align items side by side */
+    -webkit-box-orient: vertical; /* Set box orientation to vertical */
+    -webkit-line-clamp: 6; /* Show up to N lines */
 }
 
 .script-card-content img {
     max-width: 50px; /* Set a max width for the image */
     max-height: 50px; /* Set a max height for the image */
     object-fit: contain;
+    cursor: pointer; /* Change cursor to pointer for clickable image */
 }
 
 .script-card.large .script-card-content {
