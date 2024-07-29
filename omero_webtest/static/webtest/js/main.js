@@ -1,3 +1,5 @@
+// main.js
+
 var jQueryNoConflict = jQuery.noConflict(true);
 
 jQueryNoConflict(document).ready(function($) {
@@ -55,6 +57,9 @@ jQueryNoConflict(document).ready(function($) {
 
                     // Call handleWidgetResize to adjust script card sizes based on widget size
                     handleWidgetResize();
+
+                    // Apply colors to directories and their script-cards
+                    applyColorsToDirectories(); // Call the function from color_me.js
                 } else {
                     console.error("Unexpected response format:", response);
                     $("#draggable").html("<p>Error loading script menu.</p>");
