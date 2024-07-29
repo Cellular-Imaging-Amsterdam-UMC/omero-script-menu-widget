@@ -25,6 +25,9 @@ jQueryNoConflict(document).ready(function($) {
         $(".close-btn").on('click', function() {
             $("#draggable").hide();
         });
+
+        // Hide the script menu widget initially
+        $("#draggable").hide();
     }
 
     // Section 2: Script Menu Handling

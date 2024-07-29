@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Script Menu Widget</title>
+    <title>Scripts Menu Widget</title>
     <link rel="stylesheet" type="text/css" href="/static/webtest/style.css">
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="/static/webtest/js/main.js"></script>
+    <style>
+        #draggable {
+            display: none; /* Hide the widget by default */
+        }
+    </style>
 </head>
 <body>
     <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}">
         <div class="window-header ui-widget-header">
             <div class="title-container">
                 <img src="/static/webtest/img/script-text-play.svg" alt="Script Icon" class="script-icon">
-                <span class="window-title">Script Menu</span>
+                <span class="window-title">Scripts Menu</span>
             </div>
             <div class="window-controls">
                 <button class="maximize-btn">□</button>
