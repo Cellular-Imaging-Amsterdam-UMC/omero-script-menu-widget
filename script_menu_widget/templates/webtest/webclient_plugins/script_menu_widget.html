@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scripts Menu Widget</title>
+    <link rel="stylesheet" type="text/css" href="/static/webtest/style.css">
+    <!-- jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/static/webtest/js/main.js"></script>
+    <script src="/static/webtest/js/color_me.js"></script>
+    <script src="/static/webtest/js/script_card_content.js"></script>	
+    <style>
+        #draggable {
+            display: none; /* Hide the widget by default */
+        }
+    </style>
+</head>
+<body>
+    <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}">
+        <div class="window-header ui-widget-header">
+            <div class="title-container">
+                <img src="/static/webtest/img/script-text-play.svg" alt="Script Icon" class="script-icon">
+                <span class="window-title">Scripts Menu</span>
+            </div>
+            <div class="window-controls">
+                <button class="maximize-btn">□</button>
+                <button class="close-btn">×</button>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tablink" onclick="openTab(event, 'omero')">omero</button>
+            <button class="tablink" onclick="openTab(event, 'biomero')">biomero</button>
+            <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="searchScripts()">
+        </div>
+        <div id="omero" class="tabcontent">
+            <!-- omero scripts will be loaded here -->
+        </div>
+        <div id="biomero" class="tabcontent">
+            <!-- biomero scripts will be loaded here -->
+        </div>
+    </div>
+</body>
+</html>
