@@ -34,7 +34,6 @@ function applyColorsToDirectories() {
         const scriptCards = directory.querySelectorAll('.script-card');
         scriptCards.forEach((scriptCard) => {
             const lightenedColor = lightenColor(color, 30); // Lighten by 30%
-            console.log(`Applying lightened color: ${lightenedColor} to script card`);
             scriptCard.style.backgroundColor = lightenedColor;
         });
     });
