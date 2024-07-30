@@ -40,9 +40,11 @@ The `script_menu_widget` is particularly useful in laboratory environments where
 
 This project is licensed under the AGPL.
 
-## Author
+## Authors
 
-Originally developed by Aleksandra Tarkowska.
+Rodrigo Rosas-Bertolini and Torec Luik, Amsterdam University Medical Center.
+
+Originally developed by Aleksandra Tarkowska as omeor-webtest (add here link from where we forked).
 
 ---
 
