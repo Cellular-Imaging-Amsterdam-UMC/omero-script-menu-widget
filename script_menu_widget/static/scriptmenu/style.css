@@ -259,6 +259,7 @@ body {
     align-items: center; /* Center items vertically */
     white-space: normal; /* Allow text to wrap */
     text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+    font-size: 12px; /* Set smaller font size */
 }
 
 .script-card-content span {
@@ -270,6 +271,7 @@ body {
     -webkit-box-orient: vertical; /* Set box orientation to vertical */
     -webkit-line-clamp: 6; /* Show up to N lines */
     line-clamp: 6;
+    font-size: 12px; /* Set smaller font size */
 }
 
 .script-card-content img {

@@ -1,21 +1,26 @@
 // color_me.js
 
 const directoryColors = [
-    "rgb(248, 177, 149)", "rgb(204, 82, 122)", "rgb(157, 224, 173)", 
-    "rgb(252, 157, 154)", "rgb(110, 181, 192)", "rgb(7, 87, 91)", 
-    "rgb(142, 121, 112)", "rgb(83, 112, 114)", "rgb(243, 74, 74)", 
-    "rgb(114, 112, 119)", "rgb(51, 107, 135)"
+    "rgb(51, 107, 135)", "rgb(42, 49, 50)", "rgb(118, 54, 38)", "rgb(105, 105, 105)", 
+    "rgb(105, 105, 105)","rgb(51, 107, 135)", "rgb(42, 49, 50)", "rgb(118, 54, 38)"
 ];
 
 // Function to lighten a color
 function lightenColor(color, percent) {
     console.log(`Lightening color: ${color} by ${percent}%`);
-    const num = parseInt(color.slice(4, -1).split(',').map(c => c.trim()).join(''), 10);
+    const rgb = color.match(/\d+/g);
+    if (!rgb || rgb.length !== 3) {
+        console.error(`Invalid color format: ${color}`);
+        return color;
+    }
+    const num = rgb.map(Number);
     const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-    return `rgb(${Math.min(255, R)}, ${Math.min(255, G)}, ${Math.min(255, B)})`;
+    const R = Math.min(255, num[0] + amt);
+    const G = Math.min(255, num[1] + amt);
+    const B = Math.min(255, num[2] + amt);
+    const lightenedColor = `rgb(${R}, ${G}, ${B})`;
+    console.log(`Resulting lightened color: ${lightenedColor}`);
+    return lightenedColor;
 }
 
 // Function to apply colors to directories and their script-cards
