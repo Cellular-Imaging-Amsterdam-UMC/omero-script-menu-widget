@@ -255,6 +255,7 @@ body {
     display: -webkit-box; /* Use flexbox to align items side by side */
     -webkit-box-orient: vertical; /* Set box orientation to vertical */
     -webkit-line-clamp: 6; /* Show up to N lines */
+    line-clamp: 6;
     align-items: center; /* Center items vertically */
     white-space: normal; /* Allow text to wrap */
     text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
@@ -268,6 +269,7 @@ body {
     display: -webkit-box; /* Use flexbox to align items side by side */
     -webkit-box-orient: vertical; /* Set box orientation to vertical */
     -webkit-line-clamp: 6; /* Show up to N lines */
+    line-clamp: 6;
 }
 
 .script-card-content img {
