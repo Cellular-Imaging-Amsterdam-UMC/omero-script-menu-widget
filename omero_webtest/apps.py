@@ -27,6 +27,6 @@
 from django.apps import AppConfig
 
 
-class WebTestAppConfig(AppConfig):
+class ScriptMenuAppConfig(AppConfig):
     name = "omero_webtest"
     label = "webtest"
