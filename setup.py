@@ -35,7 +35,7 @@ def read(fname):
 VERSION = '0.4.3.dev0'
 
 
-setup(name="omero-webtest",
+setup(name="omero-scriptmenu",
       packages=find_packages(exclude=['ez_setup']),
       version=VERSION,
       description="A Python plugin for OMERO.web",

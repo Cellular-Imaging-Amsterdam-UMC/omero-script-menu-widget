@@ -29,4 +29,4 @@ from django.apps import AppConfig
 
 class WebTestAppConfig(AppConfig):
     name = "script_menu_widget"
-    label = "webtest"
+    label = "scriptmenu"
