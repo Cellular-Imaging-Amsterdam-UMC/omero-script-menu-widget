@@ -7,7 +7,6 @@ const directoryColors = [
 
 // Function to lighten a color
 function lightenColor(color, percent) {
-    console.log(`Lightening color: ${color} by ${percent}%`);
     const rgb = color.match(/\d+/g);
     if (!rgb || rgb.length !== 3) {
         console.error(`Invalid color format: ${color}`);
@@ -19,19 +18,15 @@ function lightenColor(color, percent) {
     const G = Math.min(255, num[1] + amt);
     const B = Math.min(255, num[2] + amt);
     const lightenedColor = `rgb(${R}, ${G}, ${B})`;
-    console.log(`Resulting lightened color: ${lightenedColor}`);
     return lightenedColor;
 }
 
 // Function to apply colors to directories and their script-cards
 function applyColorsToDirectories() {
-    console.log("Applying colors to directories...");
     // Assuming directory elements have the class "directory"
     const directories = document.querySelectorAll('.directory');
     directories.forEach((directory, index) => {
         const color = directoryColors[index % directoryColors.length];
-        console.log(`Applying color: ${color} to directory index: ${index}`);
-        
         // Set background color for the directory
         directory.style.backgroundColor = color;
         

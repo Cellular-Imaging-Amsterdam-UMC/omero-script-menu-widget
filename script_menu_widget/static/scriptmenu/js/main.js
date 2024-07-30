@@ -189,23 +189,23 @@ jQueryNoConflict(document).ready(function($) {
     $("#draggable").on('click', '.script-card', function(event) {
         event.preventDefault();
         var scriptUrl = $(this).data('url');
-        var mockEvent = {
+        var event = {
             target: {
                 href: scriptUrl
             }
         };
-        OME.openScriptWindow(mockEvent, 800, 600);
+        OME.openScriptWindow(event, 800, 600);
     });
 
     // Bind click event to images within script cards
     $("#draggable").on('click', '.script-card-content img', function(event) {
         var scriptCard = $(this).closest('.script-card');
         var scriptUrl = scriptCard.data('url');
-        var mockEvent = {
+        var event = {
             target: {
                 href: scriptUrl
             }
         };
-        OME.openScriptWindow(mockEvent, 800, 600);
+        OME.openScriptWindow(event, 800, 600);
     });
 });
