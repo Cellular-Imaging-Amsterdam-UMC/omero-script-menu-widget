@@ -22,6 +22,7 @@ const scriptCardContent = {
     18: '<span>Crop an Image using Rectangular ROIs, to create a new Image for each ROI. ROIs that extend across Z and T will crop according to the Z and T limits of each ROI. If you choose to "make an image stack" from all the ROIs, the script will create a single new Z-stack image with a single plane from each ROI. ROIs that are "Big", typically over 3k x 3k pixels will create "tiled" images using the specified tile size.\n\nAuthors: William Moore, OME Team\nContact: ome-users@lists.openmicroscopy.org.uk\nVersion: 5.3.0</span>',
     19: '<span>Take a Dataset of Images and put them in a new Plate, arranging them into rows or columns as desired. Optionally add the Plate to a new or existing Screen. See http://help.openmicroscopy.org/scripts.html\n\nAuthors: William Moore, OME Team\nContact: ome-users@lists.openmicroscopy.org.uk\nVersion: 4.3.2</span>',
     20: '<span>For Screen/Plate/Well data, this script moves your Annotations from Images to their parent Wells. If you are an Admin, this will also move annotations that other users have added, creating links that belong to the same users.\n\nAuthors: William Moore, OME Team\nContact: ome-users@lists.openmicroscopy.org.uk\nVersion: 5.3.0</span>',
+    21: '<span>Combine several single-plane images (or Z-stacks) into one with greater Z, C, T dimensions. See http://help.openmicroscopy.org/scripts.html\n\nAuthors: William Moore, OME Team\nContact: ome-users@lists.openmicroscopy.org.uk\nVersion: 4.2.0</span>',
 };
 
 function updateScriptCardContent() {
