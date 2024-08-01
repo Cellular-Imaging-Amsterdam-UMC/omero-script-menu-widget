@@ -3,7 +3,10 @@
 var jQueryNoConflict = jQuery.noConflict(true);
 
 jQueryNoConflict(document).ready(function($) {
-    // Section 1: UI Initialization and Event Bindings
+    // UI Initialization: Set up the draggable and resizable widget
+    /**
+     * Initializes the UI components of the widget.
+     */
     function initializeUI() {
         var originalSize = {
             width: $("#draggable").width(),
@@ -32,7 +35,10 @@ jQueryNoConflict(document).ready(function($) {
         $("#draggable").hide();
     }
 
-    // Section 2: Script Menu Handling
+    // Script Menu Handling: Fetch and build the script menu
+    /**
+     * Fetches the script menu data from the server.
+     */
     function fetchScriptMenu() {
         var url = $("#draggable").data("url"); // Get the URL from the data attribute
 
@@ -46,20 +52,37 @@ jQueryNoConflict(document).ready(function($) {
 
                 // Check the structure of the response
                 if (Array.isArray(response)) {
-                    var omeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "omero").ul, true);
-                    var biomeroHtml = buildScriptMenuHtml(response.find(folder => folder.name === "biomero").ul, true);
+                    // Generate tabs and content dynamically
+                    var tabContainer = $('#tabContainer');
+                    var tabContent = $('#tabContent');
+                    
+                    response.forEach(function(folder, index) {
+                        var folderName = folder.name;
+                        
+                        // Create tab button
+                        var tabButton = $('<button>')
+                            .addClass('tablink')
+                            .text(folderName)
+                            .on('click', function(event) { openTab(event, folderName); });
+                        tabContainer.append(tabButton);
+                        
+                        // Create tab content
+                        var contentDiv = $('<div>')
+                            .attr('id', folderName)
+                            .addClass('tabcontent');
+                        
+                        var folderHtml = buildScriptMenuHtml(folder.ul, true);
+                        contentDiv.html(folderHtml);
+                        tabContent.append(contentDiv);
+                    });
 
-                    $("#omero").html(omeroHtml);
-                    $("#biomero").html(biomeroHtml);
+                    // Show the first tab by default
+                    openTab(null, response[0].name);
 
-                    // Show the default tab (omero)
-                    openTab(null, 'omero');
-
-                    // Call handleWidgetResize to adjust script card sizes based on widget size
+                    // Call these functions after all content is added
                     handleWidgetResize();
-
-                    // Apply colors to directories and their script-cards
-                    applyColorsToDirectories(); // Call the function from color_me.js
+                    recalculateScroll();
+                    applyColorsToDirectories();
                 } else {
                     console.error("Unexpected response format:", response);
                     $("#draggable").html("<p>Error loading script menu.</p>");
@@ -76,6 +99,12 @@ jQueryNoConflict(document).ready(function($) {
         });
     }
 
+    /**
+     * Builds the HTML structure for the script menu.
+     * @param {Array} scriptMenu - The script menu data.
+     * @param {boolean} isMainDirectory - Indicates if it's the main directory.
+     * @returns {string} The generated HTML.
+     */
     function buildScriptMenuHtml(scriptMenu, isMainDirectory = false) {
         var html = '';
         var looseScripts = [];
@@ -109,53 +138,66 @@ jQueryNoConflict(document).ready(function($) {
         return html;
     }
 
-    // Section 3: Utility Functions
+    // Utility Functions: Handle widget resizing and scrolling
+    /**
+     * Handles the resizing of the widget and its components.
+     */
     function handleWidgetResize() {
         var widget = $("#draggable");
         if (widget.width() < 500 || widget.height() < 500) {
-            $(".subdirectory-header").hide(); // Hide subdirectory headers
-            $(".script-card").css({
-                height: 'auto', // Adjust height to fit content
-                padding: '10px', // Reduce padding
-                'max-height': '100px' // Set smaller height
-            });
-            $("#searchBar").css({
-                width: '100px' // Narrower width for smaller widget
-            });
-            // Clear script card content
+            $(".subdirectory-header").hide();
+            $(".script-card").addClass('small');
+            $("#searchBar").addClass('small');
             $(".script-card-content").empty();
         } else {
-            $(".subdirectory-header").show(); // Show subdirectory headers
-            $(".script-card").css({
-                height: '150px', // Restore original height
-                padding: '20px', // Restore original padding
-                'max-height': '' // Remove max-height restriction
-            });
-            $("#searchBar").css({
-                width: '' // Reset to default width
-            });
-            updateScriptCardContent(); // Update script card content when in large state
+            $(".subdirectory-header").show();
+            $(".script-card").removeClass('small');
+            $("#searchBar").removeClass('small');
+            updateScriptCardContent();
         }
+
+        recalculateScroll();
     }
 
-    window.openTab = function(event, tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablink");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
+    /**
+     * Recalculates the scroll for tab content.
+     */
+    function recalculateScroll() {
+        $('.tabcontent').each(function() {
+            var $tabContent = $(this);
+            $tabContent.css('height', ''); // Reset height
+            var contentHeight = $tabContent[0].scrollHeight;
+            var containerHeight = $('#draggable').height() - $('.window-header').outerHeight() - $('.tabs').outerHeight();
+            $tabContent.height(containerHeight);
+            
+            if (contentHeight > containerHeight) {
+                $tabContent.css('overflow-y', 'scroll');
+            } else {
+                $tabContent.css('overflow-y', 'auto');
+            }
+        });
+    }
+
+    /**
+     * Opens a tab and displays its content.
+     * @param {Event} event - The click event.
+     * @param {string} tabId - The ID of the tab to open.
+     */
+    window.openTab = function(event, tabId) {
+        $('.tabcontent').hide();
+        $('.tablink').removeClass('active');
+        $('#' + tabId).show();
         if (event) {
-            event.currentTarget.className += " active";
+            $(event.currentTarget).addClass('active');
         } else {
-            document.querySelector(".tablink[onclick=\"openTab(event, '" + tabName + "')\"]").classList.add("active");
+            $('.tablink').first().addClass('active');
         }
+        recalculateScroll();
     }
 
+    /**
+     * Searches for scripts based on user input.
+     */
     window.searchScripts = function() {
         var input, filter, scriptCards, i;
         input = document.getElementById("searchBar");
@@ -168,6 +210,19 @@ jQueryNoConflict(document).ready(function($) {
                 scriptCards[i].style.display = "none";
             }
         }
+    }
+
+    /**
+     * Opens a script window.
+     * @param {string} scriptUrl - The URL of the script to open.
+     */
+    function openScriptWindow(scriptUrl) {
+        var event = {
+            target: {
+                href: scriptUrl
+            }
+        };
+        OME.openScriptWindow(event, 800, 600);
     }
 
     // Initial Calls
@@ -185,27 +240,10 @@ jQueryNoConflict(document).ready(function($) {
     // Call handleWidgetResize on initial load to set the correct size
     handleWidgetResize();
 
-    // Bind click event to script cards to use OME.openScriptWindow
-    $("#draggable").on('click', '.script-card', function(event) {
+    // Bind click event to script cards and their content
+    $("#draggable").on('click', '.script-card, .script-card-content img', function(event) {
         event.preventDefault();
-        var scriptUrl = $(this).data('url');
-        var event = {
-            target: {
-                href: scriptUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
-    });
-
-    // Bind click event to images within script cards
-    $("#draggable").on('click', '.script-card-content img', function(event) {
-        var scriptCard = $(this).closest('.script-card');
-        var scriptUrl = scriptCard.data('url');
-        var event = {
-            target: {
-                href: scriptUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
+        var scriptUrl = $(this).closest('.script-card').data('url');
+        openScriptWindow(scriptUrl);
     });
 });

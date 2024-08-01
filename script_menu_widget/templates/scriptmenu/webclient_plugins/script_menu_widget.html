@@ -29,17 +29,12 @@
                 <button class="close-btn">×</button>
             </div>
         </div>
-        <div class="tabs">
-            <button class="tablink" onclick="openTab(event, 'omero')">omero</button>
-            <button class="tablink" onclick="openTab(event, 'biomero')">biomero</button>
-            <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="searchScripts()">
+        <div class="tabs" id="tabContainer">
+            <!-- Tabs will be dynamically inserted here -->
         </div>
-        <!-- These are hard coded to let omero be the first one in the tabs -->
-        <div id="omero" class="tabcontent">
-            <!-- omero scripts will be loaded here -->
-        </div>
-        <div id="biomero" class="tabcontent">
-            <!-- biomero scripts will be loaded here -->
+        <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="searchScripts()">
+        <div id="tabContent">
+            <!-- Tab content will be dynamically inserted here -->
         </div>
     </div>
 </body>

@@ -103,7 +103,7 @@ body {
     display: none;
     border: 1px solid #ccc;
     border-top: none;
-    overflow-y: auto;
+    overflow-y: scroll; /* Force scrollbar to be visible */
     height: calc(100% - 40px);
 }
 
@@ -283,4 +283,15 @@ body {
 
 .script-card.large .script-card-content {
     display: flex; /* Show content in large form */
+}
+
+/* Add these new styles */
+.script-card.small {
+    height: auto;
+    padding: 10px;
+    max-height: 100px;
+}
+
+.search-bar.small {
+    width: 100px;
 }
