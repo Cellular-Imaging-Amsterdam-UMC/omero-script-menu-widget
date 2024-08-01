@@ -150,6 +150,9 @@ jQueryNoConflict(document).ready(function($) {
             html += looseScripts.join('');
         }
 
+        // Add an empty section at the end to ensure scrolling to the bottom
+        html += '<div class="scroll-padding"></div>';
+
         return html;
     }
 
@@ -195,16 +198,13 @@ jQueryNoConflict(document).ready(function($) {
     function recalculateScroll() {
         $('.tabcontent').each(function() {
             var $tabContent = $(this);
-            $tabContent.css('height', ''); // Reset height
-            var contentHeight = $tabContent[0].scrollHeight;
             var containerHeight = $('#draggable').height() - $('.window-header').outerHeight() - $('.tabs').outerHeight();
-            $tabContent.height(containerHeight);
             
-            if (contentHeight > containerHeight) {
-                $tabContent.css('overflow-y', 'scroll');
-            } else {
-                $tabContent.css('overflow-y', 'auto');
-            }
+            // Set the height to be slightly larger than the container
+            $tabContent.height(containerHeight + 20);
+            
+            // Always show the scrollbar
+            $tabContent.css('overflow-y', 'scroll');
         });
     }
 

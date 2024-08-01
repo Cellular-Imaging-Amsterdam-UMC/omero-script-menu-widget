@@ -75,6 +75,8 @@ body {
 .tabs button {
     background-color: inherit;
     border: none;
+    border-radius: 5px;
+    margin-right: 5px;
     outline: none;
     cursor: pointer;
     padding: 10px;
@@ -105,7 +107,6 @@ body {
     display: flex;
     flex-grow: 1;
     overflow-x: auto;
-    margin-right: 10px; /* Add some space between tabs and search bar */
 }
 
 .tabs button:hover {
@@ -115,14 +116,15 @@ body {
 .tabs button.active {
     background-color: rgb(51, 51, 51) !important; /* Force the background color */
     color: white; /* Ensure text is visible on dark background */
+    border-radius: 5px; /* Rounded top edges for active tab */
 }
 
 .tabcontent {
     display: none;
     border: 1px solid #ccc;
     border-top: none;
-    overflow-y: scroll; /* Force scrollbar to be visible */
-    height: calc(100% - 40px);
+    overflow-y: scroll;
+    padding-bottom: 20px; /* Reduced from 50px to 20px */
 }
 
 .directory {
@@ -143,7 +145,7 @@ body {
 
 /* Add margin-bottom to the last directory */
 .directory:last-child {
-    margin-bottom: 50px; /* Adjust the value as needed */
+    margin-bottom: 70px; /* Increased to ensure content extends beyond visible area */
 }
 
 .subdirectory-header {
@@ -336,4 +338,8 @@ body {
     white-space: nowrap; /* Prevent text wrapping */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     line-height: 20px; /* Center the text vertically */
+}
+
+.scroll-padding {
+    height: 100px; /* Adjust this value as needed */
 }
