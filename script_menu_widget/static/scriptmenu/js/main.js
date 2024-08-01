@@ -56,6 +56,13 @@ jQueryNoConflict(document).ready(function($) {
                     var tabContainer = $('#tabContainer');
                     var tabContent = $('#tabContent');
                     
+                    // Remove existing tab buttons, but keep the search bar
+                    tabContainer.find('.tab-buttons').remove();
+                    
+                    // Create a new container for tab buttons and insert it before the search bar
+                    var tabButtonsContainer = $('<div class="tab-buttons"></div>');
+                    tabContainer.prepend(tabButtonsContainer);
+
                     response.forEach(function(folder, index) {
                         var folderName = folder.name;
                         
@@ -64,7 +71,7 @@ jQueryNoConflict(document).ready(function($) {
                             .addClass('tablink')
                             .text(folderName)
                             .on('click', function(event) { openTab(event, folderName); });
-                        tabContainer.append(tabButton);
+                        tabButtonsContainer.append(tabButton);
                         
                         // Create tab content
                         var contentDiv = $('<div>')

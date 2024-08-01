@@ -58,11 +58,18 @@ body {
 }
 
 .tabs {
-    display: flex; /* Use flexbox for layout */
-    align-items: center; /* Center items vertically */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #f1f1f1;
     border-bottom: 1px solid #ccc;
     padding: 5px;
+}
+
+#tabContainer {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
 }
 
 .tabs button {
@@ -72,22 +79,31 @@ body {
     cursor: pointer;
     padding: 10px;
     transition: 0.3s;
-    color: black; /* Set text color to black */
-    font-weight: bold; /* Match the text style of subdirectory headers */
+    color: black;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent text wrapping in buttons */
     flex-shrink: 0; /* Prevent buttons from shrinking */
-    border-radius: 5px; /* Rounded edges */
 }
 
-.tabs input[type="text"] {
-    flex: 0 1 55%; /* Flex-grow: 0, flex-shrink: 1, flex-basis: 25% */
+#searchBar {
+    margin-left: auto; /* Push to the right */
     padding: 6px;
-    margin-left: auto; /* Align the search bar to the right */
-    border: none;
-    font-size: 14px; /* Smaller font size to match tablinks */
-    transition: width 0.3s; /* Smooth transition for width change */
-    max-width: 200px; /* Set maximum width for the search bar */
-    min-width: 50px; /* Set minimum width for the search bar */
-    border-radius: 5px; /* Rounded edges to match tablink buttons */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 200px;
+    transition: width 0.3s;
+}
+
+#searchBar.small {
+    width: 100px;
+}
+
+#tabContainer {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+    margin-right: 10px; /* Add some space between tabs and search bar */
 }
 
 .tabs button:hover {
