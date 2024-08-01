@@ -152,21 +152,26 @@ jQueryNoConflict(document).ready(function($) {
     function handleWidgetResize() {
         var widget = $("#draggable");
         var isSmall = widget.width() < 500 || widget.height() < 500;
+        var searchBar = $("#searchBar");
 
         if (isSmall) {
             // Small version
             $(".subdirectory-header").hide();
             $(".script-card").addClass('small');
-            $("#searchBar").addClass('small');
+            searchBar.addClass('small');
+            searchBar.attr('placeholder', 'Search...'); // Change placeholder for small version
             $(".script-card-content").empty();
             $(".directory").addClass('small');
+            $("#uploadButton").hide(); // Hide the button in small version
         } else {
             // Large version
             $(".subdirectory-header").show();
             $(".script-card").removeClass('small');
-            $("#searchBar").removeClass('small');
+            searchBar.removeClass('small');
+            searchBar.attr('placeholder', 'Search scripts...'); // Change placeholder for large version
             updateScriptCardContent();
             $(".directory").removeClass('small');
+            $("#uploadButton").show(); // Show the button in large version
         }
 
         recalculateScroll();

@@ -93,6 +93,8 @@ body {
     font-size: 14px;
     width: 200px;
     transition: width 0.3s;
+    height: 32px; /* Set a fixed height */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 #searchBar.small {
@@ -319,4 +321,19 @@ body {
 
 .search-bar.small {
     width: 100px;
+}
+
+#uploadButton {
+    background-color: gray;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    margin-left: 5px; /* Add some space between search bar and button */
+    cursor: pointer;
+    font-size: 14px;
+    height: 32px; /* Match the height of the search input */
+    white-space: nowrap; /* Prevent text wrapping */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    line-height: 20px; /* Center the text vertically */
 }
