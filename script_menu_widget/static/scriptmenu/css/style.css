@@ -111,8 +111,8 @@ body {
 }
 
 .tabs button.active {
-    background-color: #336699 !important; /* Force the background color */
-    color: hsl(0, 0%, 100%); /* Change font color */
+    background-color: rgb(51, 51, 51) !important; /* Force the background color */
+    color: white; /* Ensure text is visible on dark background */
 }
 
 .tabcontent {
@@ -124,10 +124,19 @@ body {
 }
 
 .directory {
-    padding: 5px; /* Halved the top padding */
-    margin-top: 5px; /* Halved the margin-top */
-    border-radius: 5px; /* Optional: Add some border radius for better appearance */
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Ensure font-family is applied */
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #f1f1f1; /* Set a default background color */
+    transition: background-color 0.3s, margin 0.3s, padding 0.3s;
+}
+
+.directory.small,
+.directory.small > * {
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 /* Add margin-bottom to the last directory */
@@ -164,7 +173,7 @@ body {
 
 .script-card {
     background-color: #99ccff; /* Light blue background for script cards */
-    color: white !important; /* White text for better readability */
+    color: black !important; /* White text for better readability */
     padding: 10px; /* Halved the padding */
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -177,7 +186,7 @@ body {
     overflow: hidden; /* Ensure content does not overflow */
     position: relative; /* Required for the fade effect */
     cursor: pointer; /* Make the entire card clickable */
-    transition: background-color 0.3s, border-width 0.3s, font-weight 0.3s, color 0.3s; /* Smooth transition for hover effects */
+    transition: background-color 0.3s, border-width 0.3s, font-weight 0.3s, color 0.3s, height 0.3s, padding 0.3s, max-height 0.3s; /* Smooth transition for hover effects */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
     font-size: 16px; /* Set font size */
 }

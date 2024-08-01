@@ -151,16 +151,22 @@ jQueryNoConflict(document).ready(function($) {
      */
     function handleWidgetResize() {
         var widget = $("#draggable");
-        if (widget.width() < 500 || widget.height() < 500) {
+        var isSmall = widget.width() < 500 || widget.height() < 500;
+
+        if (isSmall) {
+            // Small version
             $(".subdirectory-header").hide();
             $(".script-card").addClass('small');
             $("#searchBar").addClass('small');
             $(".script-card-content").empty();
+            $(".directory").addClass('small');
         } else {
+            // Large version
             $(".subdirectory-header").show();
             $(".script-card").removeClass('small');
             $("#searchBar").removeClass('small');
             updateScriptCardContent();
+            $(".directory").removeClass('small');
         }
 
         recalculateScroll();
