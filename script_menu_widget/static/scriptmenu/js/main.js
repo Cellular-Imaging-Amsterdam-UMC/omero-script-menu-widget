@@ -31,6 +31,14 @@ jQueryNoConflict(document).ready(function($) {
             $("#draggable").hide();
         });
 
+        // Check if user is admin and show the 'Upload Script' button
+        if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
+            $("#uploadButton").show().on('click', function(event) {
+                event.preventDefault();
+                openScriptUploadWindow($(this).data('url'));
+            });
+        }
+
         // Hide the script menu widget initially
         $("#draggable").hide();
     }
@@ -162,7 +170,8 @@ jQueryNoConflict(document).ready(function($) {
             searchBar.attr('placeholder', 'Search...'); // Change placeholder for small version
             $(".script-card-content").empty();
             $(".directory").addClass('small');
-            $("#uploadButton").hide(); // Hide the button in small version
+            // Always ensure the upload button is visible
+            $("#uploadButton").hide();
         } else {
             // Large version
             $(".subdirectory-header").show();
@@ -171,7 +180,10 @@ jQueryNoConflict(document).ready(function($) {
             searchBar.attr('placeholder', 'Search scripts...'); // Change placeholder for large version
             updateScriptCardContent();
             $(".directory").removeClass('small');
-            $("#uploadButton").show(); // Show the button in large version
+            // Always ensure the upload button is visible
+            if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
+                $("#uploadButton").show();
+            }
         }
 
         recalculateScroll();
@@ -216,7 +228,7 @@ jQueryNoConflict(document).ready(function($) {
     /**
      * Searches for scripts based on user input.
      */
-    window.searchScripts = function() {
+    function searchScripts() {
         var input, filter, scriptCards, i;
         input = document.getElementById("searchBar");
         filter = input.value.toLowerCase();
@@ -238,6 +250,19 @@ jQueryNoConflict(document).ready(function($) {
         var event = {
             target: {
                 href: scriptUrl
+            }
+        };
+        OME.openScriptWindow(event, 800, 600);
+    }
+
+    /**
+     * Opens the script upload window.
+     * @param {string} uploadUrl - The URL for script upload.
+     */
+    function openScriptUploadWindow(uploadUrl) {
+        var event = {
+            target: {
+                href: uploadUrl
             }
         };
         OME.openScriptWindow(event, 800, 600);

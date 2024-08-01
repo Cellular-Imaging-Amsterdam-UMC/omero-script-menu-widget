@@ -25,13 +25,13 @@
                 <span class="window-title">Scripts Menu</span>
             </div>
             <div class="window-controls">
-                <button class="maximize-btn">□</button>
-                <button class="close-btn">×</button>
+                <button class="maximize-btn" aria-label="Maximize">□</button>
+                <button class="close-btn" aria-label="Close">×</button>
             </div>
         </div>
         <div class="tabs" id="tabContainer">
-            <input type="text" id="searchBar" placeholder="Search scripts..." onkeyup="searchScripts()">
-            <button id="uploadButton" class="upload-button">Upload script</button>
+            <input type="text" id="searchBar" placeholder="Search scripts..." aria-label="Search scripts">
+            <button id="uploadButton" class="upload-button" data-url="{% url 'script_upload' %}" aria-label="Upload new script">Upload script</button>
             <!-- Tabs will be dynamically inserted here -->
         </div>
         <div id="tabContent">
