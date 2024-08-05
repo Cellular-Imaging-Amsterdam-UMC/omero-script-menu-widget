@@ -155,7 +155,7 @@ body {
     padding-top: 0; /* No padding above it */
     cursor: default; /* Change cursor to default to indicate it's not clickable */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
-    font-size: 16px; /* Set font size */
+    font-size: 12px; /* Set font size */
 }
 
 @media (max-width: 600px), (max-height: 600px) {
@@ -173,6 +173,25 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 5px; /* Halved the gap between cards */
+    justify-content: flex-start; /* Align items to the start of the container */
+    width: 100%; /* Ensure the container takes full width */
+}
+
+/* For containers with only one card */
+.script-cards-container:only-child {
+    width: 100%;
+}
+
+/* For containers with exactly two cards */
+.script-cards-container:nth-last-child(2):first-child,
+.script-cards-container:nth-last-child(2):first-child ~ .script-card {
+    flex-basis: calc(50% - 5px);
+}
+
+/* For containers with exactly three cards */
+.script-cards-container:nth-last-child(3):first-child,
+.script-cards-container:nth-last-child(3):first-child ~ .script-card {
+    flex-basis: calc(33.333% - 5px);
 }
 
 .script-card {
@@ -181,7 +200,7 @@ body {
     padding: 10px; /* Halved the padding */
     border: 1px solid #ccc;
     border-radius: 5px;
-    flex: 1 1 calc(33.333% - 10px); /* Flexible width to allow 3 cards side by side */
+    flex: 1 0 calc(33.333% - 5px); /* Changed from 1 1 */
     text-align: left; /* Align text to the left */
     box-sizing: border-box;
     min-width: 200px; /* Minimum width to ensure cards are not too small */
@@ -192,7 +211,8 @@ body {
     cursor: pointer; /* Make the entire card clickable */
     transition: background-color 0.3s, border-width 0.3s, font-weight 0.3s, color 0.3s, height 0.3s, padding 0.3s, max-height 0.3s; /* Smooth transition for hover effects */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
-    font-size: 16px; /* Set font size */
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 .custom-script-card {
@@ -288,7 +308,8 @@ body {
     align-items: center; /* Center items vertically */
     white-space: normal; /* Allow text to wrap */
     text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
-    font-size: 12px; /* Set smaller font size */
+    font-size: 1em; /* Set smaller font size */
+    font-weight: normal;
 }
 
 .script-card-content span {
@@ -300,7 +321,7 @@ body {
     -webkit-box-orient: vertical; /* Set box orientation to vertical */
     -webkit-line-clamp: 6; /* Show up to N lines */
     line-clamp: 6;
-    font-size: 12px; /* Set smaller font size */
+    font-size: 1em; /* Set smaller font size */
 }
 
 .script-card-content img {
@@ -342,5 +363,18 @@ body {
 }
 
 .scroll-padding {
+    height: 100px;
+    width: 100%;
+}
+
+.bottom-dir-spacer-container {
+    background-color: transparent !important;
+}
+
+.bottom-dir-spacer {
     height: 100px; /* Adjust this value as needed */
+    width: 100%;
+    background-color: transparent !important; /* Ensure this is always applied */
+    border: none;
+    margin-top: 20px; /* Add some space above the spacer */
 }

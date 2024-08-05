@@ -150,6 +150,13 @@ jQueryNoConflict(document).ready(function($) {
             html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
         }
 
+        // Add an extra empty directory at the end of each main directory (tab)
+        if (isMainDirectory) {
+            html += '<div class="directory bottom-dir-spacer-container">';
+            html += '<div class="bottom-dir-spacer"></div>';
+            html += '</div>';
+        }
+
         return html;
     }
 
