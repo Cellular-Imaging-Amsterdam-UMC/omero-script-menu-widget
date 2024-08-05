@@ -24,7 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px;
+    padding: 0 5px;
     background-color: #333; /* Default background color */
     color: white;
     cursor: move;
@@ -38,7 +38,7 @@ body {
 }
 
 .window-title {
-    font-size: 16px; /* Default font size */
+    font-size: 1.2em;; /* Default font size */
 }
 
 .script-icon {
@@ -70,6 +70,7 @@ body {
     display: flex;
     flex-grow: 1;
     overflow-x: auto;
+    font-size: 1.1em;
 }
 
 .tabs button {
@@ -85,6 +86,7 @@ body {
     font-weight: bold;
     white-space: nowrap; /* Prevent text wrapping in buttons */
     flex-shrink: 0; /* Prevent buttons from shrinking */
+    font-size: 1.1em;
 }
 
 #searchBar {
@@ -97,16 +99,19 @@ body {
     transition: width 0.3s;
     height: 32px; /* Set a fixed height */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    font-size: 1.1em;
 }
 
 #searchBar.small {
     width: 100px;
+    font-size: 1.1em;
 }
 
 #tabContainer {
     display: flex;
     flex-grow: 1;
     overflow-x: auto;
+    font-size: 1.1em;
 }
 
 .tabs button:hover {
@@ -141,11 +146,6 @@ body {
     background-color: transparent !important;
     margin: 0 !important;
     padding-bottom: 0 !important;
-}
-
-/* Add margin-bottom to the last directory */
-.directory:last-child {
-    margin-bottom: 70px; /* Increased to ensure content extends beyond visible area */
 }
 
 .subdirectory-header {
@@ -338,6 +338,7 @@ body {
     white-space: nowrap; /* Prevent text wrapping */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     line-height: 20px; /* Center the text vertically */
+    font-size: 1.1em;
 }
 
 .scroll-padding {

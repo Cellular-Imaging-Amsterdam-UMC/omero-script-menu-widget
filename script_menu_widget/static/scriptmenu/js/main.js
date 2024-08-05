@@ -147,11 +147,8 @@ jQueryNoConflict(document).ready(function($) {
             html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
             html += '</div>';
         } else {
-            html += looseScripts.join('');
+            html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
         }
-
-        // Add an empty section at the end to ensure scrolling to the bottom
-        html += '<div class="scroll-padding"></div>';
 
         return html;
     }
