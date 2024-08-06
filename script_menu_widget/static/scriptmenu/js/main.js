@@ -2,6 +2,25 @@
 
 var jQueryNoConflict = jQuery.noConflict(true);
 
+// Move these functions outside the document.ready block
+function openScriptWindow(scriptUrl) {
+    var event = {
+        target: {
+            href: scriptUrl
+        }
+    };
+    OME.openScriptWindow(event, 800, 600);
+}
+
+function openScriptUploadWindow(uploadUrl) {
+    var event = {
+        target: {
+            href: uploadUrl
+        }
+    };
+    OME.openScriptWindow(event, 800, 600);
+}
+
 jQueryNoConflict(document).ready(function($) {
     // UI Initialization: Set up the draggable and resizable widget
     /**
@@ -121,17 +140,17 @@ jQueryNoConflict(document).ready(function($) {
      * @returns {string} The generated HTML.
      */
     function buildScriptMenuHtml(scriptMenu, isMainDirectory = false) {
-        var html = '';
+        var htmlParts = [];
         var looseScripts = [];
 
         scriptMenu.forEach(function(item) {
             if (item.ul) {
                 // Directory node
                 var directoryName = item.name.replace(/_/g, ' '); // Replace underscores with spaces
-                html += '<div class="directory">';
-                html += '<div class="subdirectory-header">' + directoryName + '</div>';
-                html += '<div class="script-cards-container">' + buildScriptMenuHtml(item.ul) + '</div>';
-                html += '</div>';
+                htmlParts.push('<div class="directory">');
+                htmlParts.push('<div class="subdirectory-header">' + directoryName + '</div>');
+                htmlParts.push('<div class="script-cards-container">' + buildScriptMenuHtml(item.ul) + '</div>');
+                htmlParts.push('</div>');
             } else if (item.id) {
                 // Leaf node (script)
                 var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
@@ -142,22 +161,22 @@ jQueryNoConflict(document).ready(function($) {
 
         // If there are loose scripts and it's a main directory, add them to a subdirectory called ♥
         if (looseScripts.length > 0 && isMainDirectory) {
-            html += '<div class="directory">';
-            html += '<div class="subdirectory-header">&hearts;</div>'; // Using HTML entity for heart symbol
-            html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
-            html += '</div>';
+            htmlParts.push('<div class="directory">');
+            htmlParts.push('<div class="subdirectory-header">&hearts;</div>'); // Using HTML entity for heart symbol
+            htmlParts.push('<div class="script-cards-container">' + looseScripts.join('') + '</div>');
+            htmlParts.push('</div>');
         } else {
-            html += '<div class="script-cards-container">' + looseScripts.join('') + '</div>';
+            htmlParts.push('<div class="script-cards-container">' + looseScripts.join('') + '</div>');
         }
 
         // Add an extra empty directory at the end of each main directory (tab)
         if (isMainDirectory) {
-            html += '<div class="directory bottom-dir-spacer-container">';
-            html += '<div class="bottom-dir-spacer"></div>';
-            html += '</div>';
+            htmlParts.push('<div class="directory bottom-dir-spacer-container">');
+            htmlParts.push('<div class="bottom-dir-spacer"></div>');
+            htmlParts.push('</div>');
         }
 
-        return html;
+        return htmlParts.join('');
     }
 
     // Utility Functions: Handle widget resizing and scrolling
@@ -224,7 +243,7 @@ jQueryNoConflict(document).ready(function($) {
         if (event) {
             $(event.currentTarget).addClass('active');
         } else {
-            $('.tablink').first().addClass('active');
+            $('.tablink:visible:first').addClass('active');
         }
         recalculateScroll();
     }
@@ -233,43 +252,51 @@ jQueryNoConflict(document).ready(function($) {
      * Searches for scripts based on user input.
      */
     function searchScripts() {
-        var input, filter, scriptCards, i;
-        input = document.getElementById("searchBar");
-        filter = input.value.toLowerCase();
-        scriptCards = document.getElementsByClassName("script-card");
-        for (i = 0; i < scriptCards.length; i++) {
-            if (scriptCards[i].innerHTML.toLowerCase().indexOf(filter) > -1) {
-                scriptCards[i].style.display = "";
+        var filter = $("#searchBar").val().toLowerCase();
+        
+        $(".tabcontent").each(function() {
+            var tabContent = $(this);
+            var hasVisibleScripts = false;
+
+            tabContent.find(".script-card").each(function() {
+                if (filter === "" || $(this).text().toLowerCase().indexOf(filter) > -1) {
+                    $(this).show();
+                    hasVisibleScripts = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Show/hide directories based on whether they have visible script cards
+            tabContent.find(".directory").each(function() {
+                if (filter === "" || $(this).find(".script-card:visible").length > 0) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Show/hide tabs based on whether they have visible scripts
+            var tabId = tabContent.attr('id');
+            if (filter === "" || hasVisibleScripts) {
+                $('.tablink[onclick*="' + tabId + '"]').show();
             } else {
-                scriptCards[i].style.display = "none";
+                $('.tablink[onclick*="' + tabId + '"]').hide();
+            }
+        });
+
+        // If search is cleared, show all tabs
+        if (filter === "") {
+            $('.tablink').show();
+        } else {
+            // Ensure at least one tab is visible and active
+            if ($('.tablink:visible').length === 0) {
+                $('.tablink').show();
+            }
+            if ($('.tablink.active:visible').length === 0) {
+                $('.tablink:visible:first').click();
             }
         }
-    }
-
-    /**
-     * Opens a script window.
-     * @param {string} scriptUrl - The URL of the script to open.
-     */
-    function openScriptWindow(scriptUrl) {
-        var event = {
-            target: {
-                href: scriptUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
-    }
-
-    /**
-     * Opens the script upload window.
-     * @param {string} uploadUrl - The URL for script upload.
-     */
-    function openScriptUploadWindow(uploadUrl) {
-        var event = {
-            target: {
-                href: uploadUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
     }
 
     // Initial Calls
@@ -292,5 +319,15 @@ jQueryNoConflict(document).ready(function($) {
         event.preventDefault();
         var scriptUrl = $(this).closest('.script-card').data('url');
         openScriptWindow(scriptUrl);
+    });
+
+    // Connect search functionality
+    $("#searchBar").on('input', function() {
+        searchScripts();
+    });
+
+    // Also call searchScripts on page load to ensure correct initial state
+    $(document).ready(function() {
+        searchScripts();
     });
 });
