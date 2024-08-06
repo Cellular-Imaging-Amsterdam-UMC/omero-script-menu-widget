@@ -8,6 +8,7 @@
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="/static/scriptmenu/js/main.js"></script>
     <script src="/static/scriptmenu/js/color_me.js"></script>
     <script src="/static/scriptmenu/js/script_card_content.js"></script>	
@@ -18,7 +19,7 @@
     </style>
 </head>
 <body>
-    <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}">
+    <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}" style="display: none;">
         <div class="window-header ui-widget-header">
             <div class="title-container">
                 <img src="/static/scriptmenu/img/script-text-play.svg" alt="Script Icon" class="script-icon">
@@ -36,6 +37,9 @@
         </div>
         <div id="tabContent">
             <!-- Tab content will be dynamically inserted here -->
+        </div>
+        <div id="searchResults" style="display: none;">
+            <!-- Search results will be displayed here -->
         </div>
     </div>
 </body>

@@ -60,14 +60,6 @@ jQueryNoConflict(document).ready(function($) {
 
             // Hide the script menu widget initially
             $("#draggable").hide();
-
-            // Show the widget once it's fully initialized
-            $(document).ready(function() {
-                $("#draggable").show();
-                if ($('.tablink').length > 0) {
-                    $('.tablink:first').click();
-                }
-            });
         }
 
     // Script Menu Handling: Fetch and build the script menu
@@ -119,7 +111,9 @@ jQueryNoConflict(document).ready(function($) {
                     });
 
                     // Show the first tab by default
-                    openTab(null, response[0].name);
+                    if (response.length > 0) {
+                        openTab(null, response[0].name);
+                    }
 
                     // Call these functions after all content is added
                     handleWidgetResize();
@@ -251,7 +245,10 @@ jQueryNoConflict(document).ready(function($) {
         if (event) {
             $(event.currentTarget).addClass('active');
         } else {
-            $('.tablink:visible:first').addClass('active');
+            // If no event (initial load), select the tab button by its text content
+            $('.tablink').filter(function() {
+                return $(this).text() === tabId;
+            }).addClass('active');
         }
         recalculateScroll();
     }
@@ -262,80 +259,88 @@ jQueryNoConflict(document).ready(function($) {
     function searchScripts() {
         var filter = $("#searchBar").val().toLowerCase();
         
+        if (filter === "") {
+            exitSearchMode();
+            return;
+        }
+
+        enterSearchMode();
+
+        var results = [];
         $(".tabcontent").each(function() {
-            var tabContent = $(this);
-            var hasVisibleScripts = false;
-
-            tabContent.find(".script-card").each(function() {
-                if (filter === "" || $(this).text().toLowerCase().indexOf(filter) > -1) {
-                    $(this).show();
-                    hasVisibleScripts = true;
-                } else {
-                    $(this).hide();
+            var tabId = $(this).attr('id');
+            $(this).find(".script-card").each(function() {
+                if ($(this).text().toLowerCase().indexOf(filter) > -1) {
+                    results.push({
+                        tabId: tabId,
+                        element: $(this).clone()
+                    });
                 }
             });
-
-            // Show/hide directories based on whether they have visible script cards
-            tabContent.find(".directory").each(function() {
-                if (filter === "" || $(this).find(".script-card:visible").length > 0) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            // Show/hide tabs based on whether they have visible scripts
-            var tabId = tabContent.attr('id');
-            if (filter === "" || hasVisibleScripts) {
-                $('.tablink[onclick*="' + tabId + '"]').show();
-            } else {
-                $('.tablink[onclick*="' + tabId + '"]').hide();
-            }
         });
 
-        // If search is cleared, show all tabs
-        if (filter === "") {
-            $('.tablink').show();
-        } else {
-            // Ensure at least one tab is visible and active
-            if ($('.tablink:visible').length === 0) {
-                $('.tablink').show();
-            }
-            if ($('.tablink.active:visible').length === 0) {
-                $('.tablink:visible:first').click();
-            }
+        displaySearchResults(results);
+    }
+
+    function enterSearchMode() {
+        $('.tablink').removeClass('active');
+        $('#tabContent').hide();
+        $('#searchResults').show();
+    }
+
+    function exitSearchMode() {
+        $('#searchResults').hide();
+        $('#tabContent').show();
+        if ($('.tablink.active').length === 0) {
+            $('.tablink:first').addClass('active').click();
         }
+    }
+
+    function displaySearchResults(results) {
+        var $searchResults = $('#searchResults');
+        $searchResults.empty();
+
+        if (results.length === 0) {
+            $searchResults.append('<p>No results found.</p>');
+            return;
+        }
+
+        results.forEach(function(result) {
+            var $resultItem = $('<div class="search-result"></div>');
+            $resultItem.append(result.element);
+            $resultItem.prepend('<div class="search-result-tab">From: ' + result.tabId + '</div>');
+            $searchResults.append($resultItem);
+        });
     }
 
     // Initial Calls
     initializeUI();
     fetchScriptMenu();
 
-    // Bind the resize event to handleWidgetResize function
+    // Consolidated resize handling
     $("#draggable").on('resize', handleWidgetResize);
-
-    // Initial call to handleWidgetResize to set the correct state on load
-    $(window).on('load', function() {
-        handleWidgetResize();
-    });
-
-    // Call handleWidgetResize on initial load to set the correct size
-    handleWidgetResize();
+    $(document).ready(handleWidgetResize);
 
     // Bind click event to script cards and their content
-    $("#draggable").on('click', '.script-card, .script-card-content img', function(event) {
+    $("#draggable").on('click', '.script-card, .script-card-content img, #searchResults .search-result', function(event) {
         event.preventDefault();
         var scriptUrl = $(this).closest('.script-card').data('url');
         openScriptWindow(scriptUrl);
     });
 
-    // Connect search functionality
-    $("#searchBar").on('input', function() {
-        searchScripts();
+    // Connect search functionality with debounce
+    var debounceSearch = _.debounce(searchScripts, 150);
+    $("#searchBar").on('input focus', debounceSearch);
+
+    // Add a click event to exit search mode when clicking on tabs
+    $('.tablink').on('click', function() {
+        $("#searchBar").val('');
+        exitSearchMode();
     });
 
-    // Also call searchScripts on page load to ensure correct initial state
-    $(document).ready(function() {
-        searchScripts();
-    });
+    // Function to show the widget
+    window.showScriptWidget = function() {
+        $("#draggable").show();
+        handleWidgetResize();
+    };
 });
