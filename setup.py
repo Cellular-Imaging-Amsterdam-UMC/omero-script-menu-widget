@@ -22,51 +22,67 @@
 
 import os
 from setuptools import setup, find_packages
-
+from setuptools.command.install import install
+from distutils.file_util import copy_file
 
 # Utility function to read the README file.
-# Used for the long_description.  It's nice, because now 1) we have a top level
-# README file and 2) it's easier to type in the README file than to put a raw
-# string in below ...
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-
 VERSION = '0.4.3.dev0'
 
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        install.run(self)
+        # Define the source and destination paths
+        src = os.path.join(self.install_lib, 'script_menu_widget', 'templates', 'scriptmenu', 'webclient_plugins', 'script_launch_head.html')
+        dst = '/opt/omero/web/venv3/lib/python3.9/site-packages/omeroweb/webclient/templates/webclient/base/includes/script_launch_head.html'
+        # Copy the new file to the OMERO directory
+        copy_file(src, dst)
+        print(f"Copied {src} to {dst}")
 
-setup(name="omero-scriptmenu",
-      packages=find_packages(exclude=['ez_setup']),
-      version=VERSION,
-      description="A Python plugin for OMERO.web",
-      long_description=read('README.rst'),
-      classifiers=[
-          'Development Status :: 5 - Production/Stable',
-          'Environment :: Web Environment',
-          'Framework :: Django',
-          'Intended Audience :: Developers',
-          'Natural Language :: English',
-          'Operating System :: OS Independent',
-          'Programming Language :: JavaScript',
-          'Programming Language :: Python :: 3',
-          'Topic :: Internet :: WWW/HTTP',
-          'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-          'Topic :: Internet :: WWW/HTTP :: WSGI',
-          'Topic :: Scientific/Engineering :: Visualization',
-          'Topic :: Software Development :: Libraries :: '
-          'Application Frameworks',
-          'Topic :: Software Development :: Testing',
-          'Topic :: Text Processing :: Markup :: HTML'
-      ],  # Get strings from
-          # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      author='The Open Microscopy Team',
-      author_email='ome-devel@lists.openmicroscopy.org.uk',
-      license='AGPL-3.0',
-      url="https://github.com/ome/omero-webtest",
-      download_url='https://github.com/ome/omero-webtest/archive/v%s.tar.gz' % VERSION,  # NOQA
-      keywords=['OMERO.web', 'plugin'],
-      install_requires=['omero-web>=5.6.0'],
-      python_requires='>=3',
-      include_package_data=True,
-      zip_safe=False,
-      )
+setup(
+    name="omero-script-menu-widget",
+    packages=find_packages(exclude=['ez_setup']),
+    version=VERSION,
+    description="A Python plugin for OMERO.web",
+    long_description=read('README.rst'),
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Programming Language :: JavaScript',
+        'Programming Language :: Python :: 3',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Internet :: WWW/HTTP :: WSGI',
+        'Topic :: Scientific/Engineering :: Visualization',
+        'Topic :: Software Development :: Libraries :: '
+        'Application Frameworks',
+        'Topic :: Software Development :: Testing',
+        'Topic :: Text Processing :: Markup :: HTML'
+    ],  # Get strings from
+        # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    author='The Open Microscopy Team',
+    author_email='rrosas@amsterdamumc.nl',
+    license='AGPL-3.0',
+    url="https://github.com/Cellular-Imaging-Amsterdam-UMC/omero-script-menu-widget/tree/master",
+    download_url='https://github.com/Cellular-Imaging-Amsterdam-UMC/omero-script-menu-widget/archive/refs/heads/master.zip',  # NOQA
+    keywords=['OMERO.web', 'plugin'],
+    install_requires=['omero-web>=5.6.0'],
+    python_requires='>=3',
+    include_package_data=True,
+    zip_safe=False,
+    cmdclass={
+        'install': PostInstallCommand,
+    },
+    package_data={
+        'script_menu_widget': [
+            'templates/scriptmenu/webclient_plugins/script_launch_head.html',
+        ],
+    },
+)

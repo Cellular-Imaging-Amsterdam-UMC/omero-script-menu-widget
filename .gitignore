@@ -5,3 +5,5 @@ django
 dist
 omero_webtest.egg-info
 .omero
+*.egg
+*.egg-info/
