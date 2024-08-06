@@ -58,9 +58,17 @@ jQueryNoConflict(document).ready(function($) {
             });
         }
 
-        // Hide the script menu widget initially
-        $("#draggable").hide();
-    }
+            // Hide the script menu widget initially
+            $("#draggable").hide();
+
+            // Show the widget once it's fully initialized
+            $(document).ready(function() {
+                $("#draggable").show();
+                if ($('.tablink').length > 0) {
+                    $('.tablink:first').click();
+                }
+            });
+        }
 
     // Script Menu Handling: Fetch and build the script menu
     /**
