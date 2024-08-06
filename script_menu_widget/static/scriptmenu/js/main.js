@@ -22,6 +22,9 @@ function openScriptUploadWindow(uploadUrl) {
 }
 
 jQueryNoConflict(document).ready(function($) {
+    // Add this line to define scriptCardContent
+    var scriptCardContent = {};
+
     // UI Initialization: Set up the draggable and resizable widget
     /**
      * Initializes the UI components of the widget.
@@ -99,7 +102,7 @@ jQueryNoConflict(document).ready(function($) {
                             .text(folderName)
                             .on('click', function(event) { 
                                 $("#searchBar").val('').trigger('input');
-                                exitSearchMode();
+                                ScriptSearch.exitSearchMode();
                                 openTab(event, folderName); 
                             });
                         tabButtonsContainer.append(tabButton);
@@ -122,7 +125,9 @@ jQueryNoConflict(document).ready(function($) {
                     // Call these functions after all content is added
                     handleWidgetResize();
                     recalculateScroll();
-                    applyColorsToDirectories();
+                    if (typeof applyColorsToDirectories === 'function') {
+                        applyColorsToDirectories();
+                    }
                 } else {
                     console.error("Unexpected response format:", response);
                     $("#draggable").html("<p>Error loading script menu.</p>");
@@ -209,8 +214,10 @@ jQueryNoConflict(document).ready(function($) {
             $(".subdirectory-header").show();
             $(".script-card").removeClass('small');
             searchBar.removeClass('small');
-            searchBar.attr('placeholder', 'Search scripts...'); // Change placeholder for large version
-            updateScriptCardContent();
+            searchBar.attr('placeholder', 'Search scripts...');
+            if (typeof updateScriptCardContent === 'function') {
+                updateScriptCardContent();
+            }
             $(".directory").removeClass('small');
             // Always ensure the upload button is visible
             if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
@@ -242,7 +249,7 @@ jQueryNoConflict(document).ready(function($) {
      * @param {Event} event - The click event.
      * @param {string} tabId - The ID of the tab to open.
      */
-    window.openTab = function(event, tabId) {
+    function openTab(event, tabId) {
         $('.tabcontent').hide();
         $('.tablink').removeClass('active');
         $('#' + tabId).show();
@@ -255,66 +262,6 @@ jQueryNoConflict(document).ready(function($) {
             }).addClass('active');
         }
         recalculateScroll();
-    }
-
-    /**
-     * Searches for scripts based on user input.
-     */
-    function searchScripts() {
-        var filter = $("#searchBar").val().toLowerCase();
-        
-        if (filter === "") {
-            exitSearchMode();
-            return;
-        }
-
-        enterSearchMode();
-
-        var results = [];
-        $(".tabcontent").each(function() {
-            var tabId = $(this).attr('id');
-            $(this).find(".script-card").each(function() {
-                if ($(this).text().toLowerCase().indexOf(filter) > -1) {
-                    results.push({
-                        tabId: tabId,
-                        element: $(this).clone()
-                    });
-                }
-            });
-        });
-
-        displaySearchResults(results);
-    }
-
-    function enterSearchMode() {
-        $('.tablink').removeClass('active');
-        $('#tabContent').hide();
-        $('#searchResults').show();
-    }
-
-    function exitSearchMode() {
-        $('#searchResults').hide();
-        $('#tabContent').show();
-        if ($('.tablink.active').length === 0) {
-            $('.tablink:first').addClass('active').click();
-        }
-    }
-
-    function displaySearchResults(results) {
-        var $searchResults = $('#searchResults');
-        $searchResults.empty();
-
-        if (results.length === 0) {
-            $searchResults.append('<p>No results found.</p>');
-            return;
-        }
-
-        results.forEach(function(result) {
-            var $resultItem = $('<div class="search-result"></div>');
-            $resultItem.append(result.element);
-            $resultItem.prepend('<div class="search-result-tab">From: ' + result.tabId + '</div>');
-            $searchResults.append($resultItem);
-        });
     }
 
     // Initial Calls
@@ -333,12 +280,18 @@ jQueryNoConflict(document).ready(function($) {
     });
 
     // Connect search functionality with debounce
-    var debounceSearch = _.debounce(searchScripts, 150);
+    var debounceSearch = _.debounce(ScriptSearch.search, 150);
     $("#searchBar").on('input focus', debounceSearch);
 
     // Function to show the widget
     window.showScriptWidget = function() {
         $("#draggable").show();
         handleWidgetResize();
+    };
+
+    // Make openTab and exitSearchMode available to other parts of the application
+    window.ScriptMenu = {
+        openTab: openTab,
+        exitSearchMode: ScriptSearch.exitSearchMode
     };
 });
