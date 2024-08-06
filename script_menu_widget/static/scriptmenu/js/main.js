@@ -97,7 +97,11 @@ jQueryNoConflict(document).ready(function($) {
                         var tabButton = $('<button>')
                             .addClass('tablink')
                             .text(folderName)
-                            .on('click', function(event) { openTab(event, folderName); });
+                            .on('click', function(event) { 
+                                $("#searchBar").val('').trigger('input');
+                                exitSearchMode();
+                                openTab(event, folderName); 
+                            });
                         tabButtonsContainer.append(tabButton);
                         
                         // Create tab content
@@ -331,12 +335,6 @@ jQueryNoConflict(document).ready(function($) {
     // Connect search functionality with debounce
     var debounceSearch = _.debounce(searchScripts, 150);
     $("#searchBar").on('input focus', debounceSearch);
-
-    // Add a click event to exit search mode when clicking on tabs
-    $('.tablink').on('click', function() {
-        $("#searchBar").val('');
-        exitSearchMode();
-    });
 
     // Function to show the widget
     window.showScriptWidget = function() {
