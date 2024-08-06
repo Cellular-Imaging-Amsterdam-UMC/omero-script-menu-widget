@@ -3,6 +3,7 @@
 var ScriptMenu = (function($) {
     var scriptCardContent = {};
     var recalculateScroll;
+    var scriptIds = [];
 
     function fetchScriptMenu(url, callbacks) {
         $.ajax({
@@ -13,6 +14,8 @@ var ScriptMenu = (function($) {
                 if (Array.isArray(response)) {
                     generateMenuContent(response);
                     if (callbacks.onSuccess) callbacks.onSuccess(response);
+                    // Call getScriptMenuData after a short delay to ensure scriptIds are populated
+                    setTimeout(getScriptMenuData, 100);
                 } else {
                     console.error("Unexpected response format:", response);
                     if (callbacks.onError) callbacks.onError("Unexpected response format");
@@ -26,6 +29,9 @@ var ScriptMenu = (function($) {
     }
 
     function generateMenuContent(response) {
+        // Clear previous script IDs
+        scriptIds = [];
+        
         var tabContainer = $('#tabContainer');
         var tabContent = $('#tabContent');
         
@@ -67,15 +73,18 @@ var ScriptMenu = (function($) {
         scriptMenu.forEach(function(item) {
             if (item.ul) {
                 // Directory node
-                var directoryName = item.name.replace(/_/g, ' '); // Replace underscores with spaces
+                var directoryName = item.name.replace(/_/g, ' ');
                 htmlParts.push('<div class="directory">');
                 htmlParts.push('<div class="subdirectory-header">' + directoryName + '</div>');
                 htmlParts.push('<div class="script-cards-container">' + buildScriptMenuHtml(item.ul) + '</div>');
                 htmlParts.push('</div>');
             } else if (item.id) {
                 // Leaf node (script)
-                var scriptName = item.name.replace('.py', '').replace(/_/g, ' '); // Remove the '.py' suffix and replace underscores with spaces
-                var content = scriptCardContent[item.id] || ''; // Get the content from scriptCardContent
+                // Record the script ID
+                scriptIds.push(item.id);
+                
+                var scriptName = item.name.replace('.py', '').replace(/_/g, ' ');
+                var content = scriptCardContent[item.id] || '';
                 looseScripts.push('<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="/webclient/script_ui/' + item.id + '/">' + scriptName + '<div class="script-card-content">' + content + '</div></div>');
             }
         });
@@ -124,9 +133,53 @@ var ScriptMenu = (function($) {
         recalculateScroll = func;
     }
 
+    function getScriptMenuData() {
+        if (scriptIds.length === 0) {
+            console.warn("No script IDs found. Skipping getScriptMenuData.");
+            return;
+        }
+
+        $.ajax({
+            url: '/scriptmenu/get_script_menu/',
+            type: 'GET',
+            data: { script_ids: scriptIds.join(',') },
+            success: function(response) {
+                console.log('Script menu data:', response);
+                if (response.script_menu) {
+                    updateScriptCards(response.script_menu);
+                }
+                if (response.error_logs && response.error_logs.length > 0) {
+                    console.warn('Errors fetching script data:');
+                    response.error_logs.forEach(function(error) {
+                        console.warn(error);
+                        // You might want to update the UI to show these errors
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching script menu data:', error);
+            }
+        });
+    }
+
+    function updateScriptCards(scriptData) {
+        scriptData.forEach(function(script) {
+            var $card = $('.script-card[data-id="' + script.id + '"]');
+            if ($card.length) {
+                var content = (script.description || 'No description could be obtained') + '<br>' +
+                              '<strong>Authors:</strong> ' + (script.authors || 'Unknown') + '<br>' +
+                              '<strong>Version:</strong> ' + (script.version || 'Unknown');
+                $card.find('.script-card-content').html(content);
+            } else {
+                console.warn('Card not found for script ID:', script.id);
+            }
+        });
+    }
+
     return {
         fetchScriptMenu: fetchScriptMenu,
         openTab: openTab,
-        setRecalculateScroll: setRecalculateScroll
+        setRecalculateScroll: setRecalculateScroll,
+        getScriptMenuData: getScriptMenuData
     };
 })(jQuery);
