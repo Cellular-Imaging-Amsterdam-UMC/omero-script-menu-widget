@@ -35,9 +35,11 @@ class PostInstallCommand(install):
     """Post-installation for installation mode."""
     def run(self):
         install.run(self)
+        # Get the current Python version
+        python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
         # Define the source and destination paths
         src = os.path.join(self.install_lib, 'script_menu_widget', 'templates', 'scriptmenu', 'webclient_plugins', 'script_launch_head.html')
-        dst = '/opt/omero/web/venv3/lib/python3.9/site-packages/omeroweb/webclient/templates/webclient/base/includes/script_launch_head.html'
+        dst = os.path.join('/opt/omero/web/venv3/lib', python_version, 'site-packages/omeroweb/webclient/templates/webclient/base/includes/script_launch_head.html')
         # Copy the new file to the OMERO directory
         copy_file(src, dst)
         print(f"Copied {src} to {dst}")
