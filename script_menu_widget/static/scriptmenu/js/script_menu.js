@@ -1,21 +1,27 @@
 // script_menu.js
 
 var ScriptMenu = (function($) {
-    var scriptCardContent = {};
-    var recalculateScroll;
-    var scriptIds = [];
+    var scriptCardContent = {}; // Stores the content for each script card, keyed by script ID
+    var recalculateScroll; // Function to recalculate scroll positions, set externally
+    var scriptIds = {}; // Stores script IDs for each directory, used for fetching detailed script data
+    var pendingDirectories = 0; // Tracks the number of directories still waiting for script data
+    var scriptDataFetched = false; // Flag to prevent redundant fetching of script data
+    var scriptData = {}; // Stores the fetched detailed script data for each directory
 
+    // Step 1: Fetch the initial script menu structure
     function fetchScriptMenu(url, callbacks) {
         $.ajax({
             url: url,
             type: "GET",
             success: function(response) {
-                console.log("Script menu fetched successfully:", response);
                 if (Array.isArray(response)) {
+                    // Step 2: Generate the menu content based on the fetched structure
                     generateMenuContent(response);
                     if (callbacks.onSuccess) callbacks.onSuccess(response);
-                    // Call getScriptMenuData after a short delay to ensure scriptIds are populated
-                    setTimeout(getScriptMenuData, 100);
+                    // Step 3: Initiate fetching of script details after a short delay
+                    if (!scriptDataFetched) {
+                        setTimeout(getScriptMenuData, 100);
+                    }
                 } else {
                     console.error("Unexpected response format:", response);
                     if (callbacks.onError) callbacks.onError("Unexpected response format");
@@ -28,9 +34,10 @@ var ScriptMenu = (function($) {
         });
     }
 
+    // Step 2: Generate the menu content and create the initial structure
     function generateMenuContent(response) {
         // Clear previous script IDs
-        scriptIds = [];
+        scriptIds = {};
         
         var tabContainer = $('#tabContainer');
         var tabContent = $('#tabContent');
@@ -66,7 +73,9 @@ var ScriptMenu = (function($) {
         }
     }
 
-    function buildScriptMenuHtml(scriptMenu, isMainDirectory = false) {
+    // Helper function to build the HTML for the script menu
+    // This function is called recursively to handle nested directories
+    function buildScriptMenuHtml(scriptMenu, isMainDirectory = false, currentDirectory = '') {
         var htmlParts = [];
         var looseScripts = [];
 
@@ -74,14 +83,18 @@ var ScriptMenu = (function($) {
             if (item.ul) {
                 // Directory node
                 var directoryName = item.name.replace(/_/g, ' ');
+                var newDirectory = currentDirectory ? currentDirectory + '/' + directoryName : directoryName;
                 htmlParts.push('<div class="directory">');
                 htmlParts.push('<div class="subdirectory-header">' + directoryName + '</div>');
-                htmlParts.push('<div class="script-cards-container">' + buildScriptMenuHtml(item.ul) + '</div>');
+                htmlParts.push('<div class="script-cards-container">' + buildScriptMenuHtml(item.ul, false, newDirectory) + '</div>');
                 htmlParts.push('</div>');
             } else if (item.id) {
                 // Leaf node (script)
-                // Record the script ID
-                scriptIds.push(item.id);
+                // Record the script ID with its directory
+                if (!scriptIds[currentDirectory]) {
+                    scriptIds[currentDirectory] = [];
+                }
+                scriptIds[currentDirectory].push(item.id);
                 
                 var scriptName = item.name.replace('.py', '').replace(/_/g, ' ');
                 var content = scriptCardContent[item.id] || '';
@@ -133,45 +146,78 @@ var ScriptMenu = (function($) {
         recalculateScroll = func;
     }
 
+    // Step 3: Fetch detailed script data for each directory
     function getScriptMenuData() {
-        if (scriptIds.length === 0) {
+        if (Object.keys(scriptIds).length === 0) {
             console.warn("No script IDs found. Skipping getScriptMenuData.");
             return;
         }
 
-        $.ajax({
-            url: '/scriptmenu/get_script_menu/',
-            type: 'GET',
-            data: { script_ids: scriptIds.join(',') },
-            success: function(response) {
-                console.log('Script menu data:', response);
-                if (response.script_menu) {
-                    updateScriptCards(response.script_menu);
+        pendingDirectories = Object.keys(scriptIds).length;
+
+        // For each directory, fetch the detailed script data
+        Object.keys(scriptIds).forEach(function(directory) {
+            $.ajax({
+                url: '/scriptmenu/get_script_menu/',
+                type: 'GET',
+                data: { 
+                    script_ids: scriptIds[directory].join(','),
+                    directory: directory
+                },
+                success: function(response) {
+                    if (response.script_menu) {
+                        scriptData[directory] = response.script_menu;
+                        // Step 4: Update script cards with fetched data
+                        updateScriptCards(response.script_menu, directory);
+                    } else {
+                        console.warn('No script_menu data in response for ' + directory);
+                    }
+                    if (response.error_logs && response.error_logs.length > 0) {
+                        console.warn('Errors fetching script data for ' + directory + ':');
+                        response.error_logs.forEach(function(error) {
+                            console.warn(error);
+                        });
+                    }
+                    pendingDirectories--;
+                    if (pendingDirectories === 0) {
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching script menu data for ' + directory + ':', error);
+                    pendingDirectories--;
+                    if (pendingDirectories === 0) {
+                    }
                 }
-                if (response.error_logs && response.error_logs.length > 0) {
-                    console.warn('Errors fetching script data:');
-                    response.error_logs.forEach(function(error) {
-                        console.warn(error);
-                        // You might want to update the UI to show these errors
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching script menu data:', error);
-            }
+            });
         });
     }
 
-    function updateScriptCards(scriptData) {
+    // Step 4: Update script cards with fetched detailed data
+    function updateScriptCards(scriptData, directory) {
         scriptData.forEach(function(script) {
             var $card = $('.script-card[data-id="' + script.id + '"]');
             if ($card.length) {
                 var content = (script.description || 'No description could be obtained') + '<br>' +
                               '<strong>Authors:</strong> ' + (script.authors || 'Unknown') + '<br>' +
                               '<strong>Version:</strong> ' + (script.version || 'Unknown');
-                $card.find('.script-card-content').html(content);
+                $card.data('content', content);
+                if (!$card.hasClass('small')) {
+                    $card.find('.script-card-content').html(content);
+                }
+                $card.addClass('loaded');
             } else {
-                console.warn('Card not found for script ID:', script.id);
+                console.warn('Card not found for script ID:', script.id, 'in directory:', directory);
+            }
+        });
+    }
+
+    // Step 5: Update all script card contents (called when widget is enlarged)
+    function updateScriptCardContent() {
+        $('.script-card').each(function() {
+            var $card = $(this);
+            var content = $card.data('content');
+            if (content) {
+                $card.find('.script-card-content').html(content);
             }
         });
     }
@@ -180,6 +226,7 @@ var ScriptMenu = (function($) {
         fetchScriptMenu: fetchScriptMenu,
         openTab: openTab,
         setRecalculateScroll: setRecalculateScroll,
-        getScriptMenuData: getScriptMenuData
+        getScriptMenuData: getScriptMenuData,
+        updateScriptCardContent: updateScriptCardContent
     };
 })(jQuery);

@@ -65,9 +65,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
             $(".subdirectory-header").show();
             $(".script-card").removeClass('small');
             searchBar.removeClass('small').attr('placeholder', 'Search scripts...');
-            if (typeof updateScriptCardContent === 'function') {
-                updateScriptCardContent();
-            }
+            ScriptMenu.updateScriptCardContent();
             $(".directory").removeClass('small');
             if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
                 $("#uploadButton").show();
@@ -123,6 +121,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
         window.showScriptWidget = function() {
             $("#draggable").show();
             handleWidgetResize();
+            ScriptMenu.getScriptMenuData();
         };
     });
 })(jQueryNoConflict);
