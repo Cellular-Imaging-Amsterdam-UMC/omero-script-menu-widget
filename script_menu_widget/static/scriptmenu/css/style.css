@@ -1,9 +1,9 @@
-body {
+#scripts-menu {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: hsl(210, 20%, 80%);
 }
 
-#draggable {
+#scripts-menu #scripts-menu-draggable {
     position: fixed;
     bottom: 50px;
     right: 50px;
@@ -20,7 +20,7 @@ body {
     color: hsl(210, 20%, 80%); /* Ensure color is applied to the widget */
 }
 
-.window-header {
+#scripts-menu .scripts-menu-window-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,23 +32,23 @@ body {
     border-top-right-radius: 10px; /* Rounded edges for the header */
 }
 
-.title-container {
+#scripts-menu .scripts-menu-title-container {
     display: flex;
     align-items: center;
 }
 
-.window-title {
-    font-size: 1.2em;; /* Default font size */
+#scripts-menu .scripts-menu-window-title {
+    font-size: 1.2em; /* Default font size */
 }
 
-.script-icon {
+#scripts-menu .scripts-menu-script-icon {
     width: 24px; /* Adjust the size as needed */
     height: 24px; /* Adjust the size as needed */
     margin-left: 10px; /* Adjust the spacing as needed */
     margin-right: 10px;
 }
 
-.window-controls button {
+#scripts-menu .scripts-menu-window-controls button {
     background: none;
     border: none;
     color: white;
@@ -57,7 +57,7 @@ body {
     font-size: 16px;
 }
 
-.tabs {
+#scripts-menu .scripts-menu-tabs {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -66,14 +66,14 @@ body {
     padding: 5px;
 }
 
-#tabContainer {
+#scripts-menu #scripts-menu-tabContainer {
     display: flex;
     flex-grow: 1;
     overflow-x: auto;
     font-size: 1.1em;
 }
 
-.tabs button {
+#scripts-menu .scripts-menu-tabs button {
     background-color: inherit;
     border: none;
     border-radius: 5px;
@@ -89,7 +89,7 @@ body {
     font-size: 1.1em;
 }
 
-#searchBar {
+#scripts-menu #scripts-menu-searchBar {
     margin-left: auto; /* Push to the right */
     padding: 6px;
     border: 1px solid #ccc;
@@ -102,29 +102,22 @@ body {
     font-size: 1.1em;
 }
 
-#searchBar.small {
+#scripts-menu #scripts-menu-searchBar.small {
     width: 100px;
     font-size: 1.1em;
 }
 
-#tabContainer {
-    display: flex;
-    flex-grow: 1;
-    overflow-x: auto;
-    font-size: 1.1em;
-}
-
-.tabs button:hover {
+#scripts-menu .scripts-menu-tabs button:hover {
     background-color: #fffdfd;
 }
 
-.tabs button.active {
+#scripts-menu .scripts-menu-tabs button.active {
     background-color: rgb(51, 51, 51) !important; /* Force the background color */
     color: white; /* Ensure text is visible on dark background */
     border-radius: 5px; /* Rounded top edges for active tab */
 }
 
-.tabcontent {
+#scripts-menu .tabcontent {
     display: none;
     border: 1px solid #ccc;
     border-top: none;
@@ -132,7 +125,7 @@ body {
     padding-bottom: 20px; /* Reduced from 50px to 20px */
 }
 
-.directory {
+#scripts-menu .directory {
     padding: 5px;
     margin: 5px;
     border-radius: 5px;
@@ -141,14 +134,14 @@ body {
     transition: background-color 0.3s, margin 0.3s, padding 0.3s;
 }
 
-.directory.small,
-.directory.small > * {
+#scripts-menu .directory.small,
+#scripts-menu .directory.small > * {
     background-color: transparent !important;
     margin: 0 !important;
     padding-bottom: 0 !important;
 }
 
-.subdirectory-header {
+#scripts-menu .subdirectory-header {
     background-color: transparent; /* Set background to transparent */
     color: white; /* Set text color to white */
     padding-bottom: 10px; /* Padding under it */
@@ -159,17 +152,17 @@ body {
 }
 
 @media (max-width: 600px), (max-height: 600px) {
-    .subdirectory-header {
+    #scripts-menu .subdirectory-header {
         display: none; /* Hide subdirectory headers */
     }
 
-    .script-card {
+    #scripts-menu .script-card {
         height: auto; /* Adjust height to fit content */
         padding: 10px; /* Reduce padding */
     }
 }
 
-.script-cards-container {
+#scripts-menu .script-cards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 5px; /* Halved the gap between cards */
@@ -178,23 +171,23 @@ body {
 }
 
 /* For containers with only one card */
-.script-cards-container:only-child {
+#scripts-menu .script-cards-container:only-child {
     width: 100%;
 }
 
 /* For containers with exactly two cards */
-.script-cards-container:nth-last-child(2):first-child,
-.script-cards-container:nth-last-child(2):first-child ~ .script-card {
+#scripts-menu .script-cards-container:nth-last-child(2):first-child,
+#scripts-menu .script-cards-container:nth-last-child(2):first-child ~ .script-card {
     flex-basis: calc(50% - 5px);
 }
 
 /* For containers with exactly three cards */
-.script-cards-container:nth-last-child(3):first-child,
-.script-cards-container:nth-last-child(3):first-child ~ .script-card {
+#scripts-menu .script-cards-container:nth-last-child(3):first-child,
+#scripts-menu .script-cards-container:nth-last-child(3):first-child ~ .script-card {
     flex-basis: calc(33.333% - 5px);
 }
 
-.script-card {
+#scripts-menu .script-card {
     background-color: #99ccff; /* Light blue background for script cards */
     color: black !important; /* White text for better readability */
     padding: 10px; /* Halved the padding */
@@ -215,17 +208,17 @@ body {
     font-weight: bold;
 }
 
-.custom-script-card {
+#scripts-menu .custom-script-card {
     background-color: #cceeff; /* Custom background color */
 }
 
-.script-card:hover {
+#scripts-menu .script-card:hover {
     background-color: #ffcc99; /* Lighter blue on hover */
     color: black !important; /* Change text color to black on hover */
     border-color: black; /* Change border color to black */
 }
 
-.minimized {
+#scripts-menu .minimized {
     width: 30px; /* Small square size */
     height: 30px;
     background-color: white;
@@ -236,27 +229,27 @@ body {
     resize: none; /* Prevent resizing */
 }
 
-.maximized {
+#scripts-menu .maximized {
     width: 100% !important;
     height: 100% !important;
     top: 0 !important;
     left: 0 !important;
 }
 
-#draggable.minimized {
+#scripts-menu #scripts-menu-draggable.minimized {
     width: 30px;
     height: 30px;
     background-color: white;
     cursor: pointer;
 }
 
-#draggable.minimized .window-header,
-#draggable.minimized .tabs,
-#draggable.minimized .tabcontent {
+#scripts-menu #scripts-menu-draggable.minimized .scripts-menu-window-header,
+#scripts-menu #scripts-menu-draggable.minimized .scripts-menu-tabs,
+#scripts-menu #scripts-menu-draggable.minimized .tabcontent {
     display: none; /* Hide all contents */
 }
 
-#draggable.minimized .restore-btn {
+#scripts-menu #scripts-menu-draggable.minimized .scripts-menu-restore-btn {
     display: block;
     width: 100%;
     height: 100%;
@@ -265,14 +258,14 @@ body {
     cursor: pointer;
 }
 
-.restore-btn {
+#scripts-menu .scripts-menu-restore-btn {
     display: none;
     position: absolute;
     top: 0;
     left: 0;
 }
 
-.script-link {
+#scripts-menu .script-link {
     text-decoration: none; /* Remove underline from script links */
     display: block; /* Ensure the link takes up the full card */
     white-space: nowrap; /* Prevent text from wrapping */
@@ -283,7 +276,7 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Ensure font-family is applied */
 }
 
-.script-link::after {
+#scripts-menu .script-link::after {
     content: ''; /* Add a fade effect */
     position: absolute;
     right: 0;
@@ -293,7 +286,7 @@ body {
     background: linear-gradient(to left, #99ccff, transparent); /* Fade effect */
 }
 
-.script-card-content {
+#scripts-menu .script-card-content {
     display: none; /* Hide content by default */
     position: static;
     bottom: 10px;
@@ -312,7 +305,7 @@ body {
     font-weight: normal;
 }
 
-.script-card-content span {
+#scripts-menu .script-card-content span {
     padding-top: 5px;
     margin-right: 10px; /* Add some space between the text and the image */
     padding-bottom: 1px;
@@ -326,29 +319,29 @@ body {
     font-size: 1em; /* Set smaller font size */
 }
 
-.script-card-content img {
+#scripts-menu .script-card-content img {
     max-width: 50px; /* Set a max width for the image */
     max-height: 50px; /* Set a max height for the image */
     object-fit: contain;
     cursor: pointer; /* Change cursor to pointer for clickable image */
 }
 
-.script-card.large .script-card-content {
+#scripts-menu .script-card.large .script-card-content {
     display: flex; /* Show content in large form */
 }
 
 /* Add these new styles */
-.script-card.small {
+#scripts-menu .script-card.small {
     height: auto;
     padding: 10px;
     max-height: 100px;
 }
 
-.search-bar.small {
+#scripts-menu .scripts-menu-search-bar.small {
     width: 100px;
 }
 
-#uploadButton {
+#scripts-menu #scripts-menu-uploadButton {
     background-color: gray;
     color: white;
     border: none;
@@ -364,16 +357,16 @@ body {
     font-size: 1.1em;
 }
 
-.scroll-padding {
+#scripts-menu .scroll-padding {
     height: 100px;
     width: 100%;
 }
 
-.bottom-dir-spacer-container {
+#scripts-menu .bottom-dir-spacer-container {
     background-color: transparent !important;
 }
 
-.bottom-dir-spacer {
+#scripts-menu .bottom-dir-spacer {
     height: 100px; /* Adjust this value as needed */
     width: 100%;
     background-color: transparent !important; /* Ensure this is always applied */

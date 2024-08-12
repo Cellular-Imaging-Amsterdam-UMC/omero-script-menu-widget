@@ -22,37 +22,37 @@ var jQueryNoConflict = jQuery.noConflict(true);
     }
 
     function initializeUI() {
-        $("#draggable").resizable({
+        $("#scripts-menu-draggable").resizable({
             handles: "all",
             resize: handleWidgetResize
         }).draggable({
-            handle: ".window-header",
+            handle: ".scripts-menu-window-header",
             containment: "window"
         });
 
-        $(".maximize-btn").on('click', function() {
-            $("#draggable").toggleClass("maximized");
+        $(".scripts-menu-maximize-btn").on('click', function() {
+            $("#scripts-menu-draggable").toggleClass("maximized");
             handleWidgetResize();
         });
 
-        $(".close-btn").on('click', function() {
-            $("#draggable").hide();
+        $(".scripts-menu-close-btn").on('click', function() {
+            $("#scripts-menu-draggable").hide();
         });
 
         if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
-            $("#uploadButton").show().on('click', function(event) {
+            $("#scripts-menu-uploadButton").show().on('click', function(event) {
                 event.preventDefault();
                 openScriptUploadWindow($(this).data('url'));
             });
         }
 
-        $("#draggable").hide();
+        $("#scripts-menu-draggable").hide();
     }
 
     function handleWidgetResize() {
-        var widget = $("#draggable");
+        var widget = $("#scripts-menu-draggable");
         var isSmall = widget.width() < 500 || widget.height() < 500;
-        var searchBar = $("#searchBar");
+        var searchBar = $("#scripts-menu-searchBar");
 
         if (isSmall) {
             $(".subdirectory-header").hide();
@@ -60,7 +60,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
             searchBar.addClass('small').attr('placeholder', 'Search...');
             $(".script-card-content").empty();
             $(".directory").addClass('small');
-            $("#uploadButton").hide();
+            $("#scripts-menu-uploadButton").hide();
         } else {
             $(".subdirectory-header").show();
             $(".script-card").removeClass('small');
@@ -68,7 +68,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
             ScriptMenu.updateScriptCardContent();
             $(".directory").removeClass('small');
             if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
-                $("#uploadButton").show();
+                $("#scripts-menu-uploadButton").show();
             }
         }
 
@@ -78,7 +78,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
     function recalculateScroll() {
         $('.tabcontent').each(function() {
             var $tabContent = $(this);
-            var containerHeight = $('#draggable').height() - $('.window-header').outerHeight() - $('.tabs').outerHeight();
+            var containerHeight = $('#scripts-menu-draggable').height() - $('.scripts-menu-window-header').outerHeight() - $('.scripts-menu-tabs').outerHeight();
             $tabContent.height(containerHeight + 20).css('overflow-y', 'scroll');
         });
     }
@@ -89,7 +89,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
     $(document).ready(function() {
         initializeUI();
 
-        ScriptMenu.fetchScriptMenu($("#draggable").data("url"), {
+        ScriptMenu.fetchScriptMenu($("#scripts-menu-draggable").data("url"), {
             onSuccess: function(response) {
                 // Delay the resize and scroll recalculation to ensure the DOM is updated
                 setTimeout(function() {
@@ -101,25 +101,25 @@ var jQueryNoConflict = jQuery.noConflict(true);
                 }, 0);
             },
             onError: function(error) {
-                $("#draggable").html("<p>Error loading script menu.</p>");
+                $("#scripts-menu-draggable").html("<p>Error loading script menu.</p>");
                 console.error("Error fetching script menu:", error);
             }
         });
 
         $(window).on('resize', handleWidgetResize);
 
-        $("#draggable").on('click', '.script-card, .script-card-content img, #searchResults .search-result', function(event) {
+        $("#scripts-menu-draggable").on('click', '.script-card, .script-card-content img, #scripts-menu-searchResults .search-result', function(event) {
             event.preventDefault();
             var scriptUrl = $(this).closest('.script-card').data('url');
             openScriptWindow(scriptUrl);
         });
 
         var debounceSearch = _.debounce(ScriptSearch.search, 150);
-        $("#searchBar").on('input focus', debounceSearch);
+        $("#scripts-menu-searchBar").on('input focus', debounceSearch);
 
         // Expose showScriptWidget function
         window.showScriptWidget = function() {
-            $("#draggable").show();
+            $("#scripts-menu-draggable").show();
             handleWidgetResize();
             ScriptMenu.getScriptMenuData();
         };

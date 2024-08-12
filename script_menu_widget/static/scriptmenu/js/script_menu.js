@@ -39,8 +39,8 @@ var ScriptMenu = (function($) {
         // Clear previous script IDs
         scriptIds = {};
         
-        var tabContainer = $('#tabContainer');
-        var tabContent = $('#tabContent');
+        var tabContainer = $('#scripts-menu-tabContainer');
+        var tabContent = $('#scripts-menu-tabContent');
         
         tabContainer.find('.tab-buttons').remove();
         var tabButtonsContainer = $('<div class="tab-buttons"></div>');

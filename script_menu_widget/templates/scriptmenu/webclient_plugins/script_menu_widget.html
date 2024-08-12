@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scripts Menu Widget</title>
-    <link rel="stylesheet" type="text/css" href="/static/scriptmenu/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/scriptmenu/css/style.css" id="scripts-menu-styles">
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -14,33 +14,35 @@
     <script src="/static/scriptmenu/js/search_scripts.js"></script>
     <script src="/static/scriptmenu/js/main.js"></script>
     <style>
-        #draggable {
+        #scripts-menu #scripts-menu-draggable {
             display: none; /* Hide the widget by default */
         }
     </style>
 </head>
 <body>
-    <div id="draggable" class="ui-widget-content" data-url="{% url 'list_scripts' %}" style="display: none;">
-        <div class="window-header ui-widget-header">
-            <div class="title-container">
-                <img src="/static/scriptmenu/img/script-text-play.svg" alt="Script Icon" class="script-icon">
-                <span class="window-title">Scripts Menu</span>
+    <div id="scripts-menu">
+        <div id="scripts-menu-draggable" class="scripts-menu-ui-widget-content" data-url="{% url 'list_scripts' %}" style="display: none;">
+            <div class="scripts-menu-window-header scripts-menu-ui-widget-header">
+                <div class="scripts-menu-title-container">
+                    <img src="/static/scriptmenu/img/script-text-play.svg" alt="Script Icon" class="scripts-menu-script-icon">
+                    <span class="scripts-menu-window-title">Scripts Menu</span>
+                </div>
+                <div class="scripts-menu-window-controls">
+                    <button class="scripts-menu-maximize-btn" aria-label="Maximize">□</button>
+                    <button class="scripts-menu-close-btn" aria-label="Close">×</button>
+                </div>
             </div>
-            <div class="window-controls">
-                <button class="maximize-btn" aria-label="Maximize">□</button>
-                <button class="close-btn" aria-label="Close">×</button>
+            <div class="scripts-menu-tabs" id="scripts-menu-tabContainer">
+                <input type="text" id="scripts-menu-searchBar" placeholder="Search scripts..." aria-label="Search scripts">
+                <button id="scripts-menu-uploadButton" class="scripts-menu-upload-button" data-url="{% url 'script_upload' %}" aria-label="Upload new script">Upload script</button>
+                <!-- Tabs will be dynamically inserted here -->
             </div>
-        </div>
-        <div class="tabs" id="tabContainer">
-            <input type="text" id="searchBar" placeholder="Search scripts..." aria-label="Search scripts">
-            <button id="uploadButton" class="upload-button" data-url="{% url 'script_upload' %}" aria-label="Upload new script">Upload script</button>
-            <!-- Tabs will be dynamically inserted here -->
-        </div>
-        <div id="tabContent">
-            <!-- Tab content will be dynamically inserted here -->
-        </div>
-        <div id="searchResults" style="display: none;">
-            <!-- Search results will be displayed here -->
+            <div id="scripts-menu-tabContent">
+                <!-- Tab content will be dynamically inserted here -->
+            </div>
+            <div id="scripts-menu-searchResults" style="display: none;">
+                <!-- Search results will be displayed here -->
+            </div>
         </div>
     </div>
 </body>
