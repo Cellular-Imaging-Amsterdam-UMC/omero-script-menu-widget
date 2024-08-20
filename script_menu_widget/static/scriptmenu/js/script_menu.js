@@ -55,7 +55,12 @@ var ScriptMenu = (function($) {
         var tabButtonsContainer = $('<div class="tab-buttons"></div>');
         tabContainer.prepend(tabButtonsContainer);
 
-        response.forEach(function(folder, index) {
+        // Filter out any items that end with '.py'
+        var folders = response.filter(function(item) {
+            return !item.name.toLowerCase().endsWith('.py');
+        });
+
+        folders.forEach(function(folder, index) {
             var folderName = folder.name;
             
             var tabButton = createTabButton(folderName);
@@ -65,8 +70,10 @@ var ScriptMenu = (function($) {
             tabContent.append(contentDiv);
         });
 
-        if (response.length > 0) {
-            openTab(null, response[0].name);
+        if (folders.length > 0) {
+            openTab(null, folders[0].name);
+        } else {
+            console.warn("No valid folders found in the script menu.");
         }
     }
 
