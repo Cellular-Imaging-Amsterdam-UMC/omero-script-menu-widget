@@ -30,8 +30,6 @@ from distutils.file_util import copy_file
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-VERSION = '0.4.3.dev0'
-
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
     def run(self):
@@ -47,8 +45,9 @@ class PostInstallCommand(install):
 
 setup(
     name="omero-script-menu-widget",
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     packages=find_packages(exclude=['ez_setup']),
-    version=VERSION,
     description="A Python plugin for OMERO.web",
     long_description=read('README.rst'),
     classifiers=[
@@ -68,13 +67,12 @@ setup(
         'Application Frameworks',
         'Topic :: Software Development :: Testing',
         'Topic :: Text Processing :: Markup :: HTML'
-    ],  # Get strings from
-        # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    ],
     author='The Open Microscopy Team',
     author_email='rrosas@amsterdamumc.nl',
     license='AGPL-3.0',
     url="https://github.com/Cellular-Imaging-Amsterdam-UMC/omero-script-menu-widget/tree/master",
-    download_url='https://github.com/Cellular-Imaging-Amsterdam-UMC/omero-script-menu-widget/archive/refs/heads/master.zip',  # NOQA
+    download_url='https://github.com/Cellular-Imaging-Amsterdam-UMC/omero-script-menu-widget/archive/refs/heads/master.zip',
     keywords=['OMERO.web', 'plugin'],
     install_requires=['omero-web>=5.6.0'],
     python_requires='>=3',
