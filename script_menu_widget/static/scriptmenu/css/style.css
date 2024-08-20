@@ -152,12 +152,13 @@
 
 #scripts-menu .subdirectory-header {
     background-color: transparent; /* Set background to transparent */
-    color: white; /* Set text color to white */
+    color: black; /* Set text color to white */
     padding-bottom: 10px; /* Padding under it */
     padding-top: 0; /* No padding above it */
     cursor: default; /* Change cursor to default to indicate it's not clickable */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; /* Ensure font-family is applied */
     font-size: 12px; /* Set font size */
+    font-weight: bold;
 }
 
 @media (max-width: 600px), (max-height: 600px) {

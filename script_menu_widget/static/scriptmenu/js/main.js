@@ -3,32 +3,44 @@
 var jQueryNoConflict = jQuery.noConflict(true);
 
 (function($) {
+    // Constants
+    const SMALL_WIDGET_THRESHOLD = 500;
+    const SCRIPT_WINDOW_WIDTH = 800;
+    const SCRIPT_WINDOW_HEIGHT = 600;
+    const SEARCH_DEBOUNCE_DELAY = 150;
+
+    /**
+     * Opens a script window with the given URL.
+     * @param {string} scriptUrl - The URL of the script to open.
+     */
     function openScriptWindow(scriptUrl) {
-        var event = {
-            target: {
-                href: scriptUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
+        var event = { target: { href: scriptUrl } };
+        OME.openScriptWindow(event, SCRIPT_WINDOW_WIDTH, SCRIPT_WINDOW_HEIGHT);
     }
 
+    /**
+     * Opens a script upload window with the given URL.
+     * @param {string} uploadUrl - The URL for script upload.
+     */
     function openScriptUploadWindow(uploadUrl) {
-        var event = {
-            target: {
-                href: uploadUrl
-            }
-        };
-        OME.openScriptWindow(event, 800, 600);
+        var event = { target: { href: uploadUrl } };
+        OME.openScriptWindow(event, SCRIPT_WINDOW_WIDTH, SCRIPT_WINDOW_HEIGHT);
     }
 
+    /**
+     * Initializes the UI components of the script menu widget.
+     */
     function initializeUI() {
-        $("#scripts-menu-draggable").resizable({
-            handles: "all",
-            resize: handleWidgetResize
-        }).draggable({
-            handle: ".scripts-menu-window-header",
-            containment: "window"
-        });
+        $("#scripts-menu-draggable")
+            .resizable({
+                handles: "all",
+                resize: handleWidgetResize
+            })
+            .draggable({
+                handle: ".scripts-menu-window-header",
+                containment: "window"
+            })
+            .hide();
 
         $(".scripts-menu-maximize-btn").on('click', function() {
             $("#scripts-menu-draggable").toggleClass("maximized");
@@ -39,66 +51,75 @@ var jQueryNoConflict = jQuery.noConflict(true);
             $("#scripts-menu-draggable").hide();
         });
 
-        if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
-            $("#scripts-menu-uploadButton").show().on('click', function(event) {
-                event.preventDefault();
-                openScriptUploadWindow($(this).data('url'));
-            });
+        if (WEBCLIENT.current_admin_privileges.includes("WriteScriptRepo")) {
+            $("#scripts-menu-uploadButton")
+                .show()
+                .on('click', function(event) {
+                    event.preventDefault();
+                    openScriptUploadWindow($(this).data('url'));
+                });
         }
-
-        $("#scripts-menu-draggable").hide();
     }
 
+    /**
+     * Handles the resizing of the widget, adjusting UI elements based on size.
+     */
     function handleWidgetResize() {
         var widget = $("#scripts-menu-draggable");
-        var isSmall = widget.width() < 500 || widget.height() < 500;
+        var isSmall = widget.width() < SMALL_WIDGET_THRESHOLD || widget.height() < SMALL_WIDGET_THRESHOLD;
         var searchBar = $("#scripts-menu-searchBar");
 
-        if (isSmall) {
-            $(".subdirectory-header").hide();
-            $(".script-card").addClass('small');
-            searchBar.addClass('small').attr('placeholder', 'Search...');
-            $(".script-card-content").empty();
-            $(".directory").addClass('small');
-            $("#scripts-menu-uploadButton").hide();
-        } else {
-            $(".subdirectory-header").show();
-            $(".script-card").removeClass('small');
-            searchBar.removeClass('small').attr('placeholder', 'Search scripts...');
+        $(".subdirectory-header").toggle(!isSmall);
+        $(".script-card").toggleClass('small', isSmall);
+        searchBar.toggleClass('small', isSmall).attr('placeholder', isSmall ? 'Search...' : 'Search scripts...');
+        $(".script-card-content").toggle(!isSmall);
+        $(".directory").toggleClass('small', isSmall);
+        $("#scripts-menu-uploadButton").toggle(!isSmall && WEBCLIENT.current_admin_privileges.includes("WriteScriptRepo"));
+
+        if (!isSmall) {
             ScriptMenu.updateScriptCardContent();
-            $(".directory").removeClass('small');
-            if (WEBCLIENT.current_admin_privileges.indexOf("WriteScriptRepo") > -1) {
-                $("#scripts-menu-uploadButton").show();
-            }
         }
 
         recalculateScroll();
     }
 
+    /**
+     * Recalculates the scroll height for tab content.
+     */
     function recalculateScroll() {
         $('.tabcontent').each(function() {
-            var $tabContent = $(this);
-            var containerHeight = $('#scripts-menu-draggable').height() - $('.scripts-menu-window-header').outerHeight() - $('.scripts-menu-tabs').outerHeight();
-            $tabContent.height(containerHeight + 20).css('overflow-y', 'scroll');
+            var containerHeight = $('#scripts-menu-draggable').height() - 
+                                  $('.scripts-menu-window-header').outerHeight() - 
+                                  $('.scripts-menu-tabs').outerHeight();
+            $(this).height(containerHeight + 20).css('overflow-y', 'scroll');
         });
     }
 
-    // Pass recalculateScroll to ScriptMenu instead of adding to window
+    // Set the recalculateScroll function in the ScriptMenu module
     ScriptMenu.setRecalculateScroll(recalculateScroll);
 
+    /**
+     * Applies colors to directories and handles any errors.
+     */
+    function applyColorsWithErrorHandling() {
+        if (typeof ColorMe !== 'undefined' && typeof ColorMe.applyColorsToDirectories === 'function') {
+            try {
+                ColorMe.applyColorsToDirectories();
+            } catch (error) {
+                console.error("Error applying colors:", error);
+            }
+        }
+    }
+
+    // Document ready function
     $(document).ready(function() {
         initializeUI();
 
         ScriptMenu.fetchScriptMenu($("#scripts-menu-draggable").data("url"), {
             onSuccess: function(response) {
-                // Delay the resize and scroll recalculation to ensure the DOM is updated
-                setTimeout(function() {
-                    handleWidgetResize();
-                    recalculateScroll();
-                    if (typeof applyColorsToDirectories === 'function') {
-                        applyColorsToDirectories();
-                    }
-                }, 0);
+                handleWidgetResize();
+                recalculateScroll();
+                setTimeout(applyColorsWithErrorHandling, 0);
             },
             onError: function(error) {
                 $("#scripts-menu-draggable").html("<p>Error loading script menu.</p>");
@@ -114,13 +135,11 @@ var jQueryNoConflict = jQuery.noConflict(true);
             openScriptWindow(scriptUrl);
         });
 
-        //Debounce search
+        // Debounce search
         var searchTimeout;
         $("#scripts-menu-searchBar").on('input focus', function() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(function() {
-                ScriptSearch.searchScripts();
-            }, 150);
+            searchTimeout = setTimeout(ScriptSearch.searchScripts, SEARCH_DEBOUNCE_DELAY);
         });
 
         // Expose showScriptWidget function
@@ -128,6 +147,7 @@ var jQueryNoConflict = jQuery.noConflict(true);
             $("#scripts-menu-draggable").show();
             handleWidgetResize();
             ScriptMenu.getScriptMenuData();
+            setTimeout(applyColorsWithErrorHandling, 0);
         };
     });
 })(jQueryNoConflict);

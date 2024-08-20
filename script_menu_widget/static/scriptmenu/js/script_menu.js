@@ -1,26 +1,33 @@
 // script_menu.js
 
 var ScriptMenu = (function($) {
-    var scriptCardContent = {}; // Stores the content for each script card, keyed by script ID
+    // Private variables
+    var scriptCardContent = {}; // Stores content for each script card, keyed by script ID
     var recalculateScroll; // Function to recalculate scroll positions, set externally
-    var scriptIds = {}; // Stores script IDs for each directory, used for fetching detailed script data
-    var pendingDirectories = 0; // Tracks the number of directories still waiting for script data
+    var scriptIds = {}; // Stores script IDs for each directory
+    var pendingDirectories = 0; // Tracks the number of directories waiting for script data
     var scriptDataFetched = false; // Flag to prevent redundant fetching of script data
     var scriptData = {}; // Stores the fetched detailed script data for each directory
 
-    // Step 1: Fetch the initial script menu structure
+    // Constants
+    const SCRIPT_FETCH_DELAY = 100; // Delay before fetching script details (ms)
+    const SCRIPT_WINDOW_URL = '/webclient/script_ui/';
+
+    /**
+     * Fetches the initial script menu structure.
+     * @param {string} url - The URL to fetch the script menu from.
+     * @param {Object} callbacks - Callback functions for success and error.
+     */
     function fetchScriptMenu(url, callbacks) {
         $.ajax({
             url: url,
             type: "GET",
             success: function(response) {
                 if (Array.isArray(response)) {
-                    // Step 2: Generate the menu content based on the fetched structure
                     generateMenuContent(response);
                     if (callbacks.onSuccess) callbacks.onSuccess(response);
-                    // Step 3: Initiate fetching of script details after a short delay
                     if (!scriptDataFetched) {
-                        setTimeout(getScriptMenuData, 100);
+                        setTimeout(getScriptMenuData, SCRIPT_FETCH_DELAY);
                     }
                 } else {
                     console.error("Unexpected response format:", response);
@@ -34,9 +41,11 @@ var ScriptMenu = (function($) {
         });
     }
 
-    // Step 2: Generate the menu content and create the initial structure
+    /**
+     * Generates the menu content and creates the initial structure.
+     * @param {Array} response - The script menu structure data.
+     */
     function generateMenuContent(response) {
-        // Clear previous script IDs
         scriptIds = {};
         
         var tabContainer = $('#scripts-menu-tabContainer');
@@ -49,22 +58,10 @@ var ScriptMenu = (function($) {
         response.forEach(function(folder, index) {
             var folderName = folder.name;
             
-            var tabButton = $('<button>')
-                .addClass('tablink')
-                .text(folderName)
-                .on('click', function(event) { 
-                    $("#searchBar").val('').trigger('input');
-                    ScriptSearch.exitSearchMode();
-                    openTab(event, folderName); 
-                });
+            var tabButton = createTabButton(folderName);
             tabButtonsContainer.append(tabButton);
             
-            var contentDiv = $('<div>')
-                .attr('id', folderName)
-                .addClass('tabcontent');
-            
-            var folderHtml = buildScriptMenuHtml(folder.ul, true);
-            contentDiv.html(folderHtml);
+            var contentDiv = createTabContent(folderName, folder.ul);
             tabContent.append(contentDiv);
         });
 
@@ -73,53 +70,122 @@ var ScriptMenu = (function($) {
         }
     }
 
-    // Helper function to build the HTML for the script menu
-    // This function is called recursively to handle nested directories
+    /**
+     * Creates a tab button for a folder.
+     * @param {string} folderName - The name of the folder.
+     * @returns {jQuery} The created tab button.
+     */
+    function createTabButton(folderName) {
+        return $('<button>')
+            .addClass('tablink')
+            .text(folderName)
+            .on('click', function(event) { 
+                $("#scripts-menu-searchBar").val('');
+                if (typeof ScriptSearch !== 'undefined' && typeof ScriptSearch.exitSearchMode === 'function') {
+                    ScriptSearch.exitSearchMode();
+                }
+                openTab(event, folderName); 
+            });
+    }
+
+    /**
+     * Creates the content div for a tab.
+     * @param {string} folderName - The name of the folder.
+     * @param {Array} scriptMenu - The script menu data for this folder.
+     * @returns {jQuery} The created content div.
+     */
+    function createTabContent(folderName, scriptMenu) {
+        return $('<div>')
+            .attr('id', folderName)
+            .addClass('tabcontent')
+            .html(buildScriptMenuHtml(scriptMenu, true));
+    }
+
+    /**
+     * Builds the HTML for the script menu.
+     * @param {Array} scriptMenu - The script menu data.
+     * @param {boolean} isMainDirectory - Whether this is a main directory.
+     * @param {string} currentDirectory - The current directory path.
+     * @returns {string} The generated HTML.
+     */
     function buildScriptMenuHtml(scriptMenu, isMainDirectory = false, currentDirectory = '') {
         var htmlParts = [];
         var looseScripts = [];
 
         scriptMenu.forEach(function(item) {
             if (item.ul) {
-                // Directory node
-                var directoryName = item.name.replace(/_/g, ' ');
-                var newDirectory = currentDirectory ? currentDirectory + '/' + directoryName : directoryName;
-                htmlParts.push('<div class="directory">');
-                htmlParts.push('<div class="subdirectory-header">' + directoryName + '</div>');
-                htmlParts.push('<div class="script-cards-container">' + buildScriptMenuHtml(item.ul, false, newDirectory) + '</div>');
-                htmlParts.push('</div>');
+                htmlParts.push(buildDirectoryHtml(item, currentDirectory));
             } else if (item.id) {
-                // Leaf node (script)
-                // Record the script ID with its directory
-                if (!scriptIds[currentDirectory]) {
-                    scriptIds[currentDirectory] = [];
-                }
-                scriptIds[currentDirectory].push(item.id);
-                
-                var scriptName = item.name.replace('.py', '').replace(/_/g, ' ');
-                var content = scriptCardContent[item.id] || '';
-                looseScripts.push('<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="/webclient/script_ui/' + item.id + '/">' + scriptName + '<div class="script-card-content">' + content + '</div></div>');
+                looseScripts.push(buildScriptCardHtml(item, currentDirectory));
             }
         });
 
-        // If there are loose scripts and it's a main directory, add them to a subdirectory called ♥
         if (looseScripts.length > 0 && isMainDirectory) {
-            htmlParts.push('<div class="directory">');
-            htmlParts.push('<div class="subdirectory-header">&hearts;</div>'); // Using HTML entity for heart symbol
-            htmlParts.push('<div class="script-cards-container">' + looseScripts.join('') + '</div>');
-            htmlParts.push('</div>');
+            htmlParts.push(buildLooseScriptsDirectory(looseScripts));
         } else {
             htmlParts.push('<div class="script-cards-container">' + looseScripts.join('') + '</div>');
         }
 
-        // Add an extra empty directory at the end of each main directory (tab)
         if (isMainDirectory) {
-            htmlParts.push('<div class="directory bottom-dir-spacer-container">');
-            htmlParts.push('<div class="bottom-dir-spacer"></div>');
-            htmlParts.push('</div>');
+            htmlParts.push(buildBottomSpacerDirectory());
         }
 
         return htmlParts.join('');
+    }
+
+    /**
+     * Builds the HTML for a directory.
+     * @param {Object} item - The directory item.
+     * @param {string} currentDirectory - The current directory path.
+     * @returns {string} The generated HTML.
+     */
+    function buildDirectoryHtml(item, currentDirectory) {
+        var directoryName = item.name.replace(/_/g, ' ');
+        var newDirectory = currentDirectory ? currentDirectory + '/' + directoryName : directoryName;
+        return '<div class="directory">' +
+               '<div class="subdirectory-header">' + directoryName + '</div>' +
+               '<div class="script-cards-container">' + buildScriptMenuHtml(item.ul, false, newDirectory) + '</div>' +
+               '</div>';
+    }
+
+    /**
+     * Builds the HTML for a script card.
+     * @param {Object} item - The script item.
+     * @param {string} currentDirectory - The current directory path.
+     * @returns {string} The generated HTML.
+     */
+    function buildScriptCardHtml(item, currentDirectory) {
+        if (!scriptIds[currentDirectory]) {
+            scriptIds[currentDirectory] = [];
+        }
+        scriptIds[currentDirectory].push(item.id);
+        
+        var scriptName = item.name.replace('.py', '').replace(/_/g, ' ');
+        var content = scriptCardContent[item.id] || '';
+        return '<div class="script-card custom-script-card" data-id="' + item.id + '" data-url="' + SCRIPT_WINDOW_URL + item.id + '/">' + 
+               scriptName + '<div class="script-card-content">' + content + '</div></div>';
+    }
+
+    /**
+     * Builds the HTML for a directory of loose scripts.
+     * @param {Array} looseScripts - Array of loose script HTML strings.
+     * @returns {string} The generated HTML.
+     */
+    function buildLooseScriptsDirectory(looseScripts) {
+        return '<div class="directory">' +
+               '<div class="subdirectory-header">&hearts;</div>' +
+               '<div class="script-cards-container">' + looseScripts.join('') + '</div>' +
+               '</div>';
+    }
+
+    /**
+     * Builds the HTML for the bottom spacer directory.
+     * @returns {string} The generated HTML.
+     */
+    function buildBottomSpacerDirectory() {
+        return '<div class="directory bottom-dir-spacer-container">' +
+               '<div class="bottom-dir-spacer"></div>' +
+               '</div>';
     }
 
     /**
@@ -134,7 +200,6 @@ var ScriptMenu = (function($) {
         if (event) {
             $(event.currentTarget).addClass('active');
         } else {
-            // If no event (initial load), select the tab button by its text content
             $('.tablink').filter(function() {
                 return $(this).text() === tabId;
             }).addClass('active');
@@ -142,11 +207,17 @@ var ScriptMenu = (function($) {
         if (recalculateScroll) recalculateScroll();
     }
 
+    /**
+     * Sets the function to recalculate scroll positions.
+     * @param {Function} func - The function to set.
+     */
     function setRecalculateScroll(func) {
         recalculateScroll = func;
     }
 
-    // Step 3: Fetch detailed script data for each directory
+    /**
+     * Fetches detailed script data for each directory.
+     */
     function getScriptMenuData() {
         if (Object.keys(scriptIds).length === 0) {
             console.warn("No script IDs found. Skipping getScriptMenuData.");
@@ -155,51 +226,61 @@ var ScriptMenu = (function($) {
 
         pendingDirectories = Object.keys(scriptIds).length;
 
-        // For each directory, fetch the detailed script data
         Object.keys(scriptIds).forEach(function(directory) {
-            $.ajax({
-                url: '/scriptmenu/get_script_menu/',
-                type: 'GET',
-                data: { 
-                    script_ids: scriptIds[directory].join(','),
-                    directory: directory
-                },
-                success: function(response) {
-                    if (response.script_menu) {
-                        scriptData[directory] = response.script_menu;
-                        // Step 4: Update script cards with fetched data
-                        updateScriptCards(response.script_menu, directory);
-                    } else {
-                        console.warn('No script_menu data in response for ' + directory);
-                    }
-                    if (response.error_logs && response.error_logs.length > 0) {
-                        console.warn('Errors fetching script data for ' + directory + ':');
-                        response.error_logs.forEach(function(error) {
-                            console.warn(error);
-                        });
-                    }
-                    pendingDirectories--;
-                    if (pendingDirectories === 0) {
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching script menu data for ' + directory + ':', error);
-                    pendingDirectories--;
-                    if (pendingDirectories === 0) {
-                    }
-                }
-            });
+            fetchScriptData(directory);
         });
     }
 
-    // Step 4: Update script cards with fetched detailed data
+    /**
+     * Fetches script data for a specific directory.
+     * @param {string} directory - The directory to fetch data for.
+     */
+    function fetchScriptData(directory) {
+        $.ajax({
+            url: '/scriptmenu/get_script_menu/',
+            type: 'GET',
+            data: { 
+                script_ids: scriptIds[directory].join(','),
+                directory: directory
+            },
+            success: function(response) {
+                handleScriptDataResponse(response, directory);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching script menu data for ' + directory + ':', error);
+                pendingDirectories--;
+            }
+        });
+    }
+
+    /**
+     * Handles the response from fetching script data.
+     * @param {Object} response - The response data.
+     * @param {string} directory - The directory the data is for.
+     */
+    function handleScriptDataResponse(response, directory) {
+        if (response.script_menu) {
+            scriptData[directory] = response.script_menu;
+            updateScriptCards(response.script_menu, directory);
+        } else {
+            console.warn('No script_menu data in response for ' + directory);
+        }
+        if (response.error_logs && response.error_logs.length > 0) {
+            console.warn('Errors fetching script data for ' + directory + ':', response.error_logs);
+        }
+        pendingDirectories--;
+    }
+
+    /**
+     * Updates script cards with fetched detailed data.
+     * @param {Array} scriptData - The script data to update with.
+     * @param {string} directory - The directory the scripts belong to.
+     */
     function updateScriptCards(scriptData, directory) {
         scriptData.forEach(function(script) {
             var $card = $('.script-card[data-id="' + script.id + '"]');
             if ($card.length) {
-                var content = (script.description || 'No description could be obtained') + '<br>' +
-                              '<strong>Authors:</strong> ' + (script.authors || 'Unknown') + '<br>' +
-                              '<strong>Version:</strong> ' + (script.version || 'Unknown');
+                var content = formatScriptContent(script);
                 $card.data('content', content);
                 if (!$card.hasClass('small')) {
                     $card.find('.script-card-content').html(content);
@@ -211,7 +292,20 @@ var ScriptMenu = (function($) {
         });
     }
 
-    // Step 5: Update all script card contents (called when widget is enlarged)
+    /**
+     * Formats the content for a script card.
+     * @param {Object} script - The script data.
+     * @returns {string} The formatted content.
+     */
+    function formatScriptContent(script) {
+        return (script.description || 'No description could be obtained') + '<br>' +
+               '<strong>Authors:</strong> ' + (script.authors || 'Unknown') + '<br>' +
+               '<strong>Version:</strong> ' + (script.version || 'Unknown');
+    }
+
+    /**
+     * Updates all script card contents (called when widget is enlarged).
+     */
     function updateScriptCardContent() {
         $('.script-card').each(function() {
             var $card = $(this);
@@ -222,6 +316,7 @@ var ScriptMenu = (function($) {
         });
     }
 
+    // Public API
     return {
         fetchScriptMenu: fetchScriptMenu,
         openTab: openTab,
