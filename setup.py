@@ -21,6 +21,7 @@
 # Version: 1.0
 
 import os
+import sys
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 from distutils.file_util import copy_file
