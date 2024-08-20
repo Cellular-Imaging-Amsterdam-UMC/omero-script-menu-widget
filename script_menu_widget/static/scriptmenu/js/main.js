@@ -114,8 +114,14 @@ var jQueryNoConflict = jQuery.noConflict(true);
             openScriptWindow(scriptUrl);
         });
 
-        var debounceSearch = _.debounce(ScriptSearch.search, 150);
-        $("#scripts-menu-searchBar").on('input focus', debounceSearch);
+        //Debounce search
+        var searchTimeout;
+        $("#scripts-menu-searchBar").on('input focus', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                ScriptSearch.searchScripts();
+            }, 150);
+        });
 
         // Expose showScriptWidget function
         window.showScriptWidget = function() {

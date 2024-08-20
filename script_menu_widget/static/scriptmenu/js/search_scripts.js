@@ -2,7 +2,7 @@
 
 var ScriptSearch = (function() {
     function searchScripts() {
-        var filter = $("#searchBar").val().toLowerCase();
+        var filter = $("#scripts-menu-searchBar").val().toLowerCase();
         
         if (filter === "") {
             exitSearchMode();
@@ -28,21 +28,21 @@ var ScriptSearch = (function() {
     }
 
     function enterSearchMode() {
-        $('.tablink').removeClass('active');
-        $('#tabContent').hide();
-        $('#searchResults').show();
+        $('.scripts-menu-tabs button').removeClass('active');
+        $('#scripts-menu-tabContent').hide();
+        $('#scripts-menu-searchResults').show();
     }
 
     function exitSearchMode() {
-        $('#searchResults').hide();
-        $('#tabContent').show();
-        if ($('.tablink.active').length === 0) {
-            $('.tablink:first').addClass('active').click();
+        $('#scripts-menu-searchResults').hide();
+        $('#scripts-menu-tabContent').show();
+        if ($('.scripts-menu-tabs button.active').length === 0) {
+            $('.scripts-menu-tabs button:first').addClass('active').click();
         }
     }
 
     function displaySearchResults(results) {
-        var $searchResults = $('#searchResults');
+        var $searchResults = $('#scripts-menu-searchResults');
         $searchResults.empty();
 
         if (results.length === 0) {
@@ -59,7 +59,7 @@ var ScriptSearch = (function() {
     }
 
     return {
-        search: searchScripts,
+        searchScripts: searchScripts,
         exitSearchMode: exitSearchMode
     };
 })();
