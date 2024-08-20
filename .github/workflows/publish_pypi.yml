@@ -30,6 +30,7 @@ jobs:
         python-version: '3.7'
     - name: Install dependencies
       run: |
+        sudo mkdir -p /opt/omero/web/venv3/lib/python3.7/site-packages/omeroweb/webclient/templates/webclient/base/includes/
         python -m pip install --upgrade pip
         pip install build
     - name: Build package
