@@ -30,10 +30,3 @@ from django.apps import AppConfig
 class ScriptMenuWidgetAppConfig(AppConfig):
     name = "script_menu_widget"
     label = "scriptmenu"
-    
-    def ready(self):
-        warnings.warn(
-            "After installation, please run this command 'omero-script-menu-widget-setup' as a root user with the OMERO venv3 activated to complete the installation.\n"
-            "To activate the omero web venv run $source /opt/omero/web/venv3/bin/activate",
-            UserWarning
-        )
