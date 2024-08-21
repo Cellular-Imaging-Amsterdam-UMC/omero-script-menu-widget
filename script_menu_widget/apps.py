@@ -27,6 +27,6 @@
 from django.apps import AppConfig
 
 
-class WebTestAppConfig(AppConfig):
+class ScriptMenuWidgetAppConfig(AppConfig):
     name = "script_menu_widget"
     label = "scriptmenu"
