@@ -17,6 +17,9 @@ var ScriptSearch = (function() {
             return;
         }
 
+        // Simulate form submission to trigger browser autocomplete
+        $("#searchForm").submit();
+
         enterSearchMode();
 
         const results = collectSearchResults(filter);
@@ -84,6 +87,16 @@ var ScriptSearch = (function() {
             $searchResults.append($resultsList);
         }
     }
+
+    // Initialize search bar event listeners
+    $(document).ready(function() {
+        // Add keypress event to trigger form submission on Enter key
+        $(SEARCH_BAR_ID).on('keypress', function(event) {
+            if (event.which === 13) { // 13 is the Enter key
+                $("#searchForm").submit(); // Programmatically submit the form
+            }
+        });
+    });
 
     return {
         searchScripts: searchScripts,

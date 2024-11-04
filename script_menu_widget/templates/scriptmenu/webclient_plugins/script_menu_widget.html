@@ -33,7 +33,9 @@
                 </div>
             </div>
             <div class="scripts-menu-tabs" id="scripts-menu-tabContainer">
-                <input type="text" id="scripts-menu-searchBar" placeholder="Search scripts..." aria-label="Search scripts" autocomplete="on" name="script-search">
+                <form id="searchForm" action="#" method="get" onsubmit="return false;">
+                    <input type="text" id="scripts-menu-searchBar" placeholder="Search scripts..." aria-label="Search scripts" autocomplete="on" name="script-search">
+                </form>
                 <button id="scripts-menu-uploadButton" class="scripts-menu-upload-button" data-url="{% url 'script_upload' %}" aria-label="Upload new script">Upload script</button>
                 <!-- Tabs will be dynamically inserted here -->
             </div>

@@ -121,12 +121,23 @@ var jQueryNoConflict = jQuery.noConflict(true);
         if (isEnlarged) {
             // Return to default size and position using CSS
             widget.removeClass('enlarged').css({
+                width: '',
+                height: '',
+                top: '',
+                left: '',
                 bottom: '50px',
                 right: '50px'
             });
         } else {
             // Enlarge with specific constraints
-            widget.addClass('enlarged');
+            widget.addClass('enlarged').css({
+                width: '',
+                height: '',
+                top: '',
+                left: '',
+                bottom: '',
+                right: ''
+            });
         }
 
         handleWidgetResize();
