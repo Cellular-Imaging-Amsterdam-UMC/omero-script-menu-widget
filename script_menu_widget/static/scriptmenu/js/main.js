@@ -111,6 +111,27 @@ var jQueryNoConflict = jQuery.noConflict(true);
         }
     }
 
+    /**
+     * Toggles the script menu widget between enlarged and default size.
+     */
+    function toggleWidgetSize() {
+        var widget = $("#scripts-menu-draggable");
+        var isEnlarged = widget.hasClass('enlarged');
+
+        if (isEnlarged) {
+            // Return to default size and position using CSS
+            widget.removeClass('enlarged').css({
+                bottom: '50px',
+                right: '50px'
+            });
+        } else {
+            // Enlarge with specific constraints
+            widget.addClass('enlarged');
+        }
+
+        handleWidgetResize();
+    }
+
     // Document ready function
     $(document).ready(function() {
         initializeUI();
@@ -149,5 +170,10 @@ var jQueryNoConflict = jQuery.noConflict(true);
             ScriptMenu.getScriptMenuData();
             setTimeout(applyColorsWithErrorHandling, 0);
         };
+
+        // Add double-click event to toggle widget size
+        $(".scripts-menu-window-header").on('dblclick', function() {
+            toggleWidgetSize();
+        });
     });
 })(jQueryNoConflict);

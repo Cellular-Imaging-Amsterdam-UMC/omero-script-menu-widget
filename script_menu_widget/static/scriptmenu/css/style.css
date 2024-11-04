@@ -33,6 +33,15 @@
     color: hsl(210, 20%, 80%);
 }
 
+#scripts-menu #scripts-menu-draggable.enlarged {
+    width: calc(100% - 360px);
+    height: calc(100% - 45px);
+    top: 40px;
+    left: 355px;
+    bottom: 5px;
+    right: 5px;
+}
+
 #scripts-menu .scripts-menu-window-header {
     display: flex;
     justify-content: space-between;
