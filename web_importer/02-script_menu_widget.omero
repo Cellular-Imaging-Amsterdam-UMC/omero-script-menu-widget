@@ -1,0 +1,5 @@
+# OMERO.web configuration extension of script_menu_widget
+
+# Server side browser importer
+config append -- omero.web.apps '"ssb_importer"'
+config append -- omero.web.ui.right_plugins '["", "ssbimporter/webclient_plugins/ssb_importer.html", "ssb importer"]'

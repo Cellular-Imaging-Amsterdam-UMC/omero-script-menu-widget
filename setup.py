@@ -31,7 +31,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name="omero-script-menu-widget",
+    name="omero-web-importer",
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     packages=find_packages(exclude=['ez_setup']),
@@ -66,13 +66,14 @@ setup(
     include_package_data=True,
     zip_safe=False,
     package_data={
-        'script_menu_widget': [
-            'templates/scriptmenu/webclient_plugins/script_launch_head.html',
+        'web_importer': [
+            'templates/webimporter/webclient_plugins/importer_button.html',
+            'templates/webimporter/webclient_plugins/ssb.html',
         ],
     },
     entry_points={
         'console_scripts': [
-            'omero-script-menu-widget-setup=script_menu_widget.setup_integration:main',
+            'omero-web-import-setup=web_import.setup_integration:main',
         ],
     },
 )
