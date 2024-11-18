@@ -1,27 +1,32 @@
-{% comment %}
-<!--
-  Copyright (C) 2011 University of Dundee & Open Microscopy Environment.
-  All rights reserved.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as
-  published by the Free Software Foundation, either version 3 of the
-  License, or (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-{% endcomment %}
-
 <script type="text/javascript">
-    $(document).ready(function(){
-        $("#scriptButton").on('click', function() {
-            $("#scripts-menu-draggable").toggle(); // Toggle the visibility of the script menu widget
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+        // Locate the element with id="script_notifications"
+        var scriptNotifications = document.getElementById("script_notifications");
+
+        if (scriptNotifications) {
+            // Create a new button element
+            var newButton = document.createElement("button");
+            newButton.innerText = "Toggle Scripts";
+            newButton.id = "newScriptButton"; // Add an ID for styling or future reference
+            newButton.className = "toolbar_button"; // Optional: match existing class styles
+
+            // Add an event listener to the button
+            newButton.addEventListener("click", function () {
+                var scriptMenu = document.getElementById("scripts-menu-draggable");
+                if (scriptMenu) {
+                    scriptMenu.style.display =
+                        scriptMenu.style.display === "none" || scriptMenu.style.display === ""
+                            ? "block"
+                            : "none";
+                } else {
+                    console.warn("Script menu not found!");
+                }
+            });
+
+            // Inject the button as the last child of the list
+            scriptNotifications.appendChild(newButton);
+        } else {
+            console.warn('Element with id="script_notifications" not found.');
+        }
     });
 </script>

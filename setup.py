@@ -73,7 +73,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'omero-web-import-setup=web_import.setup_integration:main',
+            'omero-web-importer-setup=web_importer.setup_integration:main',
         ],
     },
 )

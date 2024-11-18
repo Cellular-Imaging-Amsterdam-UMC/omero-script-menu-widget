@@ -1,1 +1,1 @@
-default_app_config = 'ssb_importer.apps.ssbImporterAppConfig'
+default_app_config = 'web_importer.apps.webImporterAppConfig'
