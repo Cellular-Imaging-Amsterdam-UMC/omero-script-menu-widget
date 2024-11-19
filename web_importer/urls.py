@@ -1,10 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from django.urls import re_path
+from django.urls import path
 from . import views
 
+app_name = 'webimporter'
+
 urlpatterns = [
-    re_path(r'^webclient_templates/(?P<base_template>[a-z0-9_]+)/',
-            views.webclient_templates, name='webclient_templates'),
-    re_path(r'^get_script_menu/$', views.get_script_menu, name='get_script_menu'),
+    # Import page URLs
+    path('server_side_browser/', views.server_side_browser, name='server_side_browser'),
+    path('api/list_dir/', views.list_directory, name='list_directory'),
+    path('api/file_info/', views.file_info, name='file_info'),
+    path('api/import_selected/', views.import_selected, name='import_selected'),
 ]

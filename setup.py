@@ -68,7 +68,10 @@ setup(
     package_data={
         'web_importer': [
             'templates/webimporter/webclient_plugins/importer_button.html',
-            'templates/webimporter/webclient_plugins/ssb.html',
+            'templates/webimporter/webclient_plugins/server_side_browser.html',
+            'static/webimporter/js/server_side_browser.js',
+            'static/webimporter/css/importer_button.css',
+            'static/webimporter/js/importer_button.js',
         ],
     },
     entry_points={
